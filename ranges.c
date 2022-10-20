@@ -38,17 +38,17 @@ int main(int argc, char *argv[])
 
     // parse arguments
 	while ( 1 ) {
-		//int this_option_optind = optind ? optind : 1;	
+		//int this_option_optind = optind ? optind : 1;
 		int option_index = 0;
 
 		c = getopt_long(argc, argv, optstring, long_options, &option_index);
 		if ( c == -1 ) {
-			break;	
+			break;
 		}
 
 		switch ( c ) {
 			case 'h':
-				print_help();	
+				print_help();
 				return 1;
 
 			case '?':
@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
 		if ( optind > argc ) {
 			printf("Error: too few arguments.\n");
 		} else {
-			printf("Error: too many arguments.\n");	
+			printf("Error: too many arguments.\n");
 		}
 		exit(1);
 	}
-    
+
     return 0;
 }
