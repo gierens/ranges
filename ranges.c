@@ -55,7 +55,9 @@ int main(int argc, char *argv[])
 				break;
 
 			default:
-				printf("Error: getopt returned unrecognized character code 0%o\n", c);
+				printf(
+                    "Error: getopt returned unrecognized character code 0%o\n",
+                    c);
 				return 2;
 		}
 	}
