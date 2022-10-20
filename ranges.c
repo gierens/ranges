@@ -14,7 +14,7 @@ void print_help(void)
 {
     print_usage();
     printf("\n"
-           "Ranges is a command line program to extrac ranges from various\n"
+           "Ranges is a command line program to extract ranges from various\n"
            "types of lists, e.g. integer numbers, dates, IP and MAC\n"
            "addresses.\n"
            "\n"
