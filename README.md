@@ -1,4 +1,4 @@
-# Ranges
+# ranges
 
 ![build](https://github.com/gierens/ranges/actions/workflows/build.yml/badge.svg)
 ![tests](https://github.com/gierens/ranges/actions/workflows/test.yml/badge.svg)
