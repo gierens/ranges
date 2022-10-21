@@ -38,7 +38,9 @@ void print_help(void)
            "  -m, --mac              Extract MAC address ranges.\n"
            "  -h, --help             Print this help message.\n"
            // TODO usage example
-           // TODO author and github page
+           "\n"
+           "Author: Sandro-Alessio Gierens\n"
+           "Github: https://github.com/gierens/ranges\n"
            );
 }
 
