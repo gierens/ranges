@@ -1,0 +1,22 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "feature-13-continuous-integration" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: debian-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: build ranges binary
+        run: make
+      - name: run tests
+        run: make test
