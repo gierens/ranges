@@ -1,0 +1,17 @@
+name: build
+on:
+  push:
+    branches: [ "feature-13-continuous-integration" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
