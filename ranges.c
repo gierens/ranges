@@ -61,7 +61,7 @@ static struct option long_options[] = {
     {"help",   no_argument, 0, 'h'},
 };
 
-static const char* optstring = "diImh";
+static const char* optstring = "HobdiImh";
 
 
 int extract_decimal_number_ranges(void)
