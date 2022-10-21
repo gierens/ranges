@@ -37,7 +37,12 @@ void print_help(void)
            "  -I, --ipv6             Extract IPv6 address ranges.\n"
            "  -m, --mac              Extract MAC address ranges.\n"
            "  -h, --help             Print this help message.\n"
-           // TODO usage example
+           "\n"
+           "Example:\n"
+           "  bash $> printf '1\\n2\\n3\\n6\\n7\\n9\\n10\\n11\\n' | ranges\n"
+           "  1 - 3\n"
+           "  6 - 7\n"
+           "  9 - 11\n"
            "\n"
            "Author: Sandro-Alessio Gierens\n"
            "Github: https://github.com/gierens/ranges\n"
