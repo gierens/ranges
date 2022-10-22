@@ -2,9 +2,9 @@ CC=gcc
 CFLAGS=-O3
 
 .PHONY: all
-all: ranges.out
+all: bin/ranges
 
-%.out: %.c
+bin/%: src/%.c
 	$(CC) $(CFLAGS) $< -o $@	
 
 .PHONY: setup

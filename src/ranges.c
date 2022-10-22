@@ -85,6 +85,11 @@ int extract_decimal_number_ranges(void)
         line[line_len - 1] = '\0';
         line_len--;
 
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
         // parse decimal number
         number = strtoll(line, &invalid, 10);
 
@@ -130,7 +135,9 @@ int extract_decimal_number_ranges(void)
     }
 
     // print remaining range end
-    printf("%lld\n", range_end);
+    if (!first) {
+        printf("%lld\n", range_end);
+    }
 
     free(line);
     return EXIT_SUCCESS;
@@ -250,7 +257,8 @@ int main(int argc, char *argv[])
                 return EXIT_SUCCESS;
 
             case '?':
-                break;
+                print_usage_with_help_remark();
+                return EXIT_FAILURE;
 
             default:
                 fprintf(stderr,
