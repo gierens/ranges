@@ -1,7 +1,20 @@
 CC=gcc
 CFLAGS=-O3
 
-all: ranges.out
+.PHONY: all
+all: bin/ranges
 
-%.out: %.c
+bin/%: src/%.c
 	$(CC) $(CFLAGS) $< -o $@	
+
+.PHONY: setup
+setup:
+	git submodule init
+
+.PHONY: tests
+tests: all
+	test/deps/bats/bin/bats test/*.bats
+
+.PHONY: clean
+clean:
+	rm -f *.out
