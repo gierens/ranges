@@ -66,14 +66,6 @@ setup() {
     assert_output '0x1 0x3'
 }
 
-# TODO
-@test "partially negative dumplicate number sequence -5 -4 -4 -3 -1 0 0 0 0 +1 +3 +4 +5 +5 +5 works" {
-    run bash -c "printf -- '-5\n-4\n-4\n-3\n-1\n0\n0\n0\n0\n+1\n+3\n+4\n+5\n+5\n+5\n' | ranges"
-    assert_success
-    assert_output "-5 -3
--1 1
-3 5"
-}
 @test "dumplicate number sequence 0x0 0x0 0x0 0x0 0x1 0x3 0x4 0x5 0x5 0x5 works" {
     run bash -c "printf -- '0x0\n0x0\n0x0\n0x0\n0x1\n0x3\n0x4\n0x5\n0x5\n0x5\n' | ranges -H"
     assert_success
