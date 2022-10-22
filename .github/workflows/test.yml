@@ -9,10 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Update apt
-        run: sudo apt update
-      - name: Install glibc
-        run: sudo apt install -y libc6=2.34
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
