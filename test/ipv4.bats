@@ -4,14 +4,116 @@ setup() {
 }
 
 
-@test "-i leads to 'not implemented error'" {
-    run ranges -i
-    assert_failure
-    assert_output --partial "Not implemented yet"
+@test "empty input causes empty output" {
+    run bash -c "echo '' | ranges -i"
+    assert_success
+    assert_output ''
+
+    run bash -c "echo '' | ranges --ipv4"
+    assert_success
+    assert_output ''
+}
+ 
+@test "empty input lines cause empty output" {
+    run bash -c "printf '\n\n\n' | ranges -i"
+    assert_success
+    assert_output ''
+
+    run bash -c "printf '\n\n\n' | ranges --ipv4"
+    assert_success
+    assert_output ''
 }
 
-@test "--ipv4 leads to 'not implemented error'" {
-    run ranges --ipv4
+@test "single line input 127.0.0.1 works" {
+    run bash -c "printf '127.0.0.1\n' | ranges -i"
+    assert_success
+    assert_output '127.0.0.1 127.0.0.1'
+
+    run bash -c "printf '127.0.0.1\n' | ranges --ipv4"
+    assert_success
+    assert_output '127.0.0.1 127.0.0.1'
+}
+
+@test "trivial sequence 1.0.0.1 1.0.0.2 1.0.0.3 works" {
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.3\n' | ranges -i"
+    assert_success
+    assert_output '1.0.0.1 1.0.0.3'
+
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.3\n' | ranges --ipv4"
+    assert_success
+    assert_output '1.0.0.1 1.0.0.3'
+}
+
+@test "simple sequence 1.0.0.1 1.0.0.2 1.0.0.3 1.0.0.7 1.0.0.8 1.0.0.9 works" {
+    run bash -c "printf '\n1.0.0.1\n1.0.0.2\n1.0.0.3\n1.0.0.7\n1.0.0.8\n1.0.0.9\n' | ranges -i"
+    assert_success
+    assert_output "1.0.0.1 1.0.0.3
+1.0.0.7 1.0.0.9"
+
+    run bash -c "printf '\n1.0.0.1\n1.0.0.2\n1.0.0.3\n1.0.0.7\n1.0.0.8\n1.0.0.9\n' | ranges --ipv4"
+    assert_success
+    assert_output "1.0.0.1 1.0.0.3
+1.0.0.7 1.0.0.9"
+}
+
+@test "duplicate ip sequence 1.0.0.1 1.0.0.2 1.0.0.2 1.0.0.2 1.0.0.3 works" {
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.2\n1.0.0.2\n1.0.0.3\n' | ranges -i"
+    assert_success
+    assert_output '1.0.0.1 1.0.0.3'
+
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.2\n1.0.0.2\n1.0.0.3\n' | ranges --ipv4"
+    assert_success
+    assert_output '1.0.0.1 1.0.0.3'
+}
+
+@test "dumplicate ip sequence 1.0.0.0 1.0.0.0 1.0.0.0 1.0.0.0 1.0.0.1 1.0.0.3 1.0.0.4 1.0.0.5 1.0.0.5 1.0.0.5 works" {
+    run bash -c "printf -- '1.0.0.0\n1.0.0.0\n1.0.0.0\n1.0.0.0\n1.0.0.1\n1.0.0.3\n1.0.0.4\n1.0.0.5\n1.0.0.5\n1.0.0.5\n' | ranges -i"
+    assert_success
+    assert_output "1.0.0.0 1.0.0.1
+1.0.0.3 1.0.0.5"
+
+    run bash -c "printf -- '1.0.0.0\n1.0.0.0\n1.0.0.0\n1.0.0.0\n1.0.0.1\n1.0.0.3\n1.0.0.4\n1.0.0.5\n1.0.0.5\n1.0.0.5\n' | ranges --ipv4"
+    assert_success
+    assert_output "1.0.0.0 1.0.0.1
+1.0.0.3 1.0.0.5"
+}
+
+@test "wrong format sequence 1.0.0.1 1.0.2 1.0.0.3 causes format error" {
+    run bash -c "printf '1.0.0.1\n1.0.2\n1.0.0.3\n' | ranges -i"
     assert_failure
-    assert_output --partial "Not implemented yet"
+    assert_output --partial "Error: Wrong input format on line '1.0.2'."
+
+    run bash -c "printf '1.0.0.1\n1.0.2\n1.0.0.3\n' | ranges --ipv4"
+    assert_failure
+    assert_output --partial "Error: Wrong input format on line '1.0.2'."
+}
+
+@test "wrong format sequence 1.0.0.1 '1.0.0.2 ' 1.0.0.3 causes format error" {
+    run bash -c "printf '1.0.0.1\n1.0.0.2 \n1.0.0.3\n' | ranges -i"
+    assert_failure
+    assert_output --partial "Error: Wrong input format on line '1.0.0.2 '."
+
+    run bash -c "printf '1.0.0.1\n1.0.0.2 \n1.0.0.3\n' | ranges --ipv4"
+    assert_failure
+    assert_output --partial "Error: Wrong input format on line '1.0.0.2 '."
+}
+
+@test "wrong format sequence 1.0.0.1 '1.0.0.1 1.0.0.2' 1.0.0.3 causes format error" {
+    run bash -c "printf '1.0.0.1\n1.0.0.1 1.0.0.2\n1.0.0.3\n' | ranges -i"
+    assert_failure
+    assert_output --partial "Error: Wrong input format on line '1.0.0.1 1.0.0.2'."
+
+    run bash -c "printf '1.0.0.1\n1.0.0.1 1.0.0.2\n1.0.0.3\n' | ranges --ipv4"
+    assert_failure
+    assert_output --partial "Error: Wrong input format on line '1.0.0.1 1.0.0.2'."
+}
+
+@test "unsorted sequence 1.0.0.1 1.0.0.2 1.0.0.3 1.0.0.2 1.0.0.7 1.0.0.8 1.0.0.9 causes unsorted error" {
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.3\n1.0.0.2\n1.0.0.7\n1.0.0.8\n1.0.0.9\n' | ranges -i"
+    assert_failure
+    assert_output --partial "Error: Input is not sorted on line '1.0.0.2'."
+
+    run bash -c "printf '1.0.0.1\n1.0.0.2\n1.0.0.3\n1.0.0.2\n1.0.0.7\n1.0.0.8\n1.0.0.9\n' | ranges --ipv4"
+    assert_failure
+    assert_output --partial "Error: Input is not sorted on line '1.0.0.2'."
 }
