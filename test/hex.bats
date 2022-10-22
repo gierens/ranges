@@ -34,7 +34,7 @@ setup() {
     assert_output '0x1 0x1'
 }
 
-@test "trivial sequence 1 2 3 works" {
+@test "trivial sequence 0x1 0x2 0x3 works" {
     run bash -c "printf '0x1\n0x2\n0x3\n' | ranges -H"
     assert_success
     assert_output '0x1 0x3'
