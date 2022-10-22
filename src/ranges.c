@@ -24,8 +24,8 @@ void print_help(void)
     print_usage();
     printf("\n"
            "Ranges is a command line program to extract ranges from various\n"
-           "types of lists, decimal integer numbers by default, but also \n"
-           "dates, IP or MAC addresses.\n"
+           "types of lists, signed decimal integer numbers by default, but \n"
+           "also dates, IP or MAC addresses.\n"
            "\n"
            "Note that the input is assumed to be sorted already. Duplicates\n"
            "don't need to be removed however.\n"
@@ -33,9 +33,10 @@ void print_help(void)
            "Optional arguments:\n"
            // TODO file argument for operation on given file instead of stdin
            // TODO -s for skipping not parsable stuff
-           "  -H, --hex              Extract hexadecimal number ranges.\n"
-           "  -o, --octal            Extract octal number ranges.\n"
-           "  -b, --binary           Extract binary number ranges.\n"
+           "  -H, --hex              Extract unsigned hexadecimal number "
+           "ranges.\n"
+           "  -o, --octal            Extract unsigned octal number ranges.\n"
+           "  -b, --binary           Extract unsigned binary number ranges.\n"
            "  -d, --date             Extract date ranges.\n"
            "  -i, --ipv4             Extract IPv4 address ranges.\n"
            "  -I, --ipv6             Extract IPv6 address ranges.\n"
@@ -146,8 +147,83 @@ int extract_decimal_number_ranges(void)
 
 int extract_hexadecimal_number_ranges(void)
 {
-    fprintf(stderr, "Not implemented yet\n");
-    return EXIT_FAILURE;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t line_len = 0;
+    bool first = true;
+    long long int range_end = 0;
+    long long int number = 0;
+    char *invalid = NULL;
+    errno = 0;
+
+    // loop over input lines
+    while ((line_len = getline(&line, &len, stdin)) != -1) {
+        // remove line terminator
+        line[line_len - 1] = '\0';
+        line_len--;
+
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
+        // check that line starts with 0x
+        if (line_len < 3 || line[0] != '0' || line[1] != 'x') {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+
+        // parse decimal number
+        number = strtoll(line+2, &invalid, 16);
+
+        // handle parsing errors
+        if (invalid - line != line_len) {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+        if (number == LLONG_MIN) {
+            fprintf(stderr, "Error: Underflow on input line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+        if (number == LLONG_MAX) {
+            fprintf(stderr, "Error: Overflow on input line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+        if (errno) {
+            fprintf(stderr, "Error: strtoll error %d (%s) on "
+                    "input line '%s'.\n",
+                    errno, strerror(errno), line);
+            return EXIT_FAILURE;
+        }
+
+        // identify range start and end, and output accordingly
+        if (first) {
+            printf("0x%llx ", number);
+            range_end = number;
+            first = false;
+        } else {
+            if (number < range_end) {
+                fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
+                        line);
+                return EXIT_FAILURE;
+            }
+            if (number == range_end + 1) {
+                range_end = number;
+            } else if (number > range_end + 1) {
+                printf("0x%llx\n", range_end);
+                printf("0x%llx ", number);
+                range_end = number;
+            }
+        }
+    }
+
+    // print remaining range end
+    if (!first) {
+        printf("0x%llx\n", range_end);
+    }
+
+    free(line);
+    return EXIT_SUCCESS;
 }
 
 int extract_octal_number_ranges(void)
