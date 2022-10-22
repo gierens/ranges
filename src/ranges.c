@@ -51,7 +51,7 @@ void print_help(void)
            "  9 11\n"
            "\n"
            "Author: Sandro-Alessio Gierens\n"
-           "Github: https://github.com/gierens/ranges\n"
+           "GitHub: https://github.com/gierens/ranges\n"
            );
 }
 
