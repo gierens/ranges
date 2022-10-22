@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string.h>
 #include <limits.h>
+#include <arpa/inet.h>
 
 
 void print_usage(void)
@@ -246,8 +247,63 @@ int extract_date_ranges(void)
 
 int extract_ipv4_ranges(void)
 {
-    fprintf(stderr, "Not implemented yet\n");
-    return EXIT_FAILURE;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t line_len = 0;
+    bool first = true;
+    struct in_addr range_end;
+    struct in_addr ip;
+    char ip_str[INET_ADDRSTRLEN];
+
+    // loop over input lines
+    while ((line_len = getline(&line, &len, stdin)) != -1) {
+        // remove line terminator
+        line[line_len - 1] = '\0';
+        line_len--;
+
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
+        // parse ip address
+        if (inet_pton(AF_INET, line, &ip) == 0) {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+
+        // identify range start and end, and output accordingly
+        if (first) {
+            inet_ntop(AF_INET, &ip, ip_str, INET_ADDRSTRLEN);
+            printf("%s ", ip_str);
+            range_end.s_addr = ip.s_addr;
+            first = false;
+        } else {
+            if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
+                fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
+                        line);
+                return EXIT_FAILURE;
+            }
+            if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
+                range_end.s_addr = ip.s_addr;
+            } else if (htonl(ip.s_addr) > htonl(range_end.s_addr) + 1) {
+                inet_ntop(AF_INET, &range_end, ip_str, INET_ADDRSTRLEN);
+                printf("%s\n", ip_str);
+                inet_ntop(AF_INET, &ip, ip_str, INET_ADDRSTRLEN);
+                printf("%s ", ip_str);
+                range_end.s_addr = ip.s_addr;
+            }
+        }
+    }
+
+    // print remaining range end
+    if (!first) {
+        inet_ntop(AF_INET, &range_end, ip_str, INET_ADDRSTRLEN);
+        printf("%s\n", ip_str);
+    }
+
+    free(line);
+    return EXIT_SUCCESS;
 }
 
 int extract_ipv6_ranges(void)
