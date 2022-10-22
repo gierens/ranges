@@ -10,6 +10,7 @@ bin/%: src/%.c
 .PHONY: setup
 setup:
 	git submodule init
+	git submodule update
 
 .PHONY: tests
 tests: all
