@@ -37,11 +37,11 @@ setup() {
 @test "full ipv6 format single line input 0000:0000:0000:0000:0000:0000:0000:0001 works" {
     run bash -c "printf '0000:0000:0000:0000:0000:0000:0000:0001\n' | ranges -I"
     assert_success
-    assert_output '0000:0000:0000:0000:0000:0000:0000:0001 0000:0000:0000:0000:0000:0000:0000:0001'
+    assert_output '::1 ::1'
 
     run bash -c "printf '0000:0000:0000:0000:0000:0000:0000:0001\n' | ranges --ipv6"
     assert_success
-    assert_output '0000:0000:0000:0000:0000:0000:0000:0001 0000:0000:0000:0000:0000:0000:0000:0001'
+    assert_output '::1 ::1'
 }
 
 @test "trivial sequence ::1 ::2 ::3 works" {
@@ -76,15 +76,15 @@ setup() {
     assert_output '::1 ::3'
 }
 
-@test "dumplicate ip sequence ::0 ::0 ::0 ::0 ::1 ::3 ::4 ::5 ::5 ::5 works" {
-    run bash -c "printf -- '::0\n::0\n::0\n::0\n::1\n::3\n::4\n::5\n::5\n::5\n' | ranges -I"
+@test "dumplicate ip sequence :: :: :: :: ::1 ::3 ::4 ::5 ::5 ::5 works" {
+    run bash -c "printf -- '::\n::\n::\n::\n::1\n::3\n::4\n::5\n::5\n::5\n' | ranges -I"
     assert_success
-    assert_output "::0 ::1
+    assert_output ":: ::1
 ::3 ::5"
 
-    run bash -c "printf -- '::0\n::0\n::0\n::0\n::1\n::3\n::4\n::5\n::5\n::5\n' | ranges --ipv6"
+    run bash -c "printf -- '::\n::\n::\n::\n::1\n::3\n::4\n::5\n::5\n::5\n' | ranges --ipv6"
     assert_success
-    assert_output "::0 ::1
+    assert_output ":: ::1
 ::3 ::5"
 }
 
