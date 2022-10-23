@@ -24,7 +24,7 @@ setup() {
     assert_output ''
 }
 
-@test "single line input 1 works" {
+@test "single line input 0x1 works" {
     run bash -c "printf '0x1\n' | ranges -H"
     assert_success
     assert_output '0x1 0x1'
