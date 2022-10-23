@@ -108,16 +108,15 @@ setup() {
     assert_output --partial "Error: Wrong input format on line '0b1 0b10'."
 }
 
-# TODO
-# @test "overflow sequence 0b777777777777777777777 causes overflow error" {
-#     run bash -c "printf '0b777777777777777777777\n' | ranges -b"
-#     assert_failure
-#     assert_output --partial "Error: Overflow on input line '0b777777777777777777777'."
-# 
-#     run bash -c "printf '0b777777777777777777777\n' | ranges --binary"
-#     assert_failure
-#     assert_output --partial "Error: Overflow on input line '0b777777777777777777777'."
-# }
+@test "overflow sequence 0b1000000000000000000000000000000000000000000000000000000000000000 causes overflow error" {
+    run bash -c "printf '0b1000000000000000000000000000000000000000000000000000000000000000\n' | ranges -b"
+    assert_failure
+    assert_output --partial "Error: Overflow on input line '0b1000000000000000000000000000000000000000000000000000000000000000'."
+
+    run bash -c "printf '0b1000000000000000000000000000000000000000000000000000000000000000\n' | ranges --binary"
+    assert_failure
+    assert_output --partial "Error: Overflow on input line '0b1000000000000000000000000000000000000000000000000000000000000000'."
+}
 
 @test "unsorted sequence 0b1 0b10 0b11 0b10 0b111 0b1000 0b1001 causes unsorted error" {
     run bash -c "printf '0b1\n0b10\n0b11\n0b10\n0b111\n0b1000\n0b1001\n' | ranges -b"
