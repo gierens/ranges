@@ -32,21 +32,22 @@ void print_help(void)
            "don't need to be removed however.\n"
            "\n"
            "Optional arguments:\n"
-           "  -H, --hex     Extract unsigned hexadecimal number "
+           "  -H, --hex       Extract unsigned hexadecimal number "
            "ranges. (Format: 0x1)\n"
-           "  -o, --octal   Extract unsigned octal number ranges. "
+           "  -o, --octal     Extract unsigned octal number ranges. "
            "(Format: 0o1)\n"
-           "  -b, --binary  Extract unsigned binary number ranges. "
+           "  -b, --binary    Extract unsigned binary number ranges. "
            "(Format: 0b1)\n"
-           "  -d, --date    Extract date ranges. "
+           "  -d, --date      Extract date ranges. "
            "(Format: 2022-01-01)\n"
-           "  -i, --ipv4    Extract IPv4 address ranges. "
+           "  -i, --ipv4      Extract IPv4 address ranges. "
            "(Format: 10.0.0.1)\n"
-           "  -I, --ipv6    Extract IPv6 address ranges. "
+           "  -I, --ipv6      Extract IPv6 address ranges. "
            "(Format: ::1)\n"
-           "  -m, --mac     Extract MAC address ranges. "
+           "  -m, --mac       Extract MAC address ranges. "
            "(Format: 00:00:00:00:00:01)\n"
-           "  -h, --help    Print this help message.\n"
+           "  -h, --help      Print this help message.\n"
+           "  -v, --version   Print version information.\n"
            "\n"
            "Example:\n"
            "  bash $> printf '1\\n2\\n3\\n6\\n7\\n9\\n10\\n11\\n' | ranges\n"
@@ -54,24 +55,38 @@ void print_help(void)
            "  6 7\n"
            "  9 11\n"
            "\n"
-           "Author: Sandro-Alessio Gierens\n"
-           "GitHub: https://github.com/gierens/ranges\n"
+           "For more information, to contribute to the project or to file\n"
+           "issues see the GitHub page: <https://github.com/gierens/ranges>\n"
+           );
+}
+
+
+void print_version(void)
+{
+    printf("ranges 0.1\n"
+           "Copyright (C) 2022 Sandro-Alessio Gierens\n"
+           "License GPLv3+: GNU GPL version 3 or later "
+           "<https://gnu.org/licenses/gpl.html>.\n"
+           "This is free software, you are free to change and redistribute "
+           "it.\n"
+           "This program comes with ABSOLUTELY NO WARRANTY.\n"
            );
 }
 
 
 static struct option long_options[] = {
-    {"hex",    no_argument, 0, 'H'},
-    {"octal",  no_argument, 0, 'o'},
-    {"binary", no_argument, 0, 'b'},
-    {"date",   no_argument, 0, 'd'},
-    {"ipv4",   no_argument, 0, 'i'},
-    {"ipv6",   no_argument, 0, 'I'},
-    {"mac",    no_argument, 0, 'm'},
-    {"help",   no_argument, 0, 'h'},
+    {"hex",     no_argument, 0, 'H'},
+    {"octal",   no_argument, 0, 'o'},
+    {"binary",  no_argument, 0, 'b'},
+    {"date",    no_argument, 0, 'd'},
+    {"ipv4",    no_argument, 0, 'i'},
+    {"ipv6",    no_argument, 0, 'I'},
+    {"mac",     no_argument, 0, 'm'},
+    {"help",    no_argument, 0, 'h'},
+    {"version", no_argument, 0, 'v'},
 };
 
-static const char* optstring = "HobdiImh";
+static const char* optstring = "HobdiImhv";
 
 
 int extract_decimal_number_ranges(void)
@@ -662,6 +677,10 @@ int main(int argc, char *argv[])
 
             case 'h':
                 print_help();
+                return EXIT_SUCCESS;
+
+            case 'v':
+                print_version();
                 return EXIT_SUCCESS;
 
             case '?':
