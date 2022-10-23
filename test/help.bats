@@ -8,26 +8,26 @@ setup() {
     run ranges -h
     assert_success
     assert_output --partial 'Usage: ranges ['
-    assert_output --partial 'GitHub: https://github.com/gierens/ranges'
+    assert_output --partial 'issues see the GitHub page: <https://github.com/gierens/ranges>'
 }
 
 @test "--help returns help text" {
     run ranges -h
     assert_success
     assert_output --partial 'Usage: ranges ['
-    assert_output --partial 'GitHub: https://github.com/gierens/ranges'
+    assert_output --partial 'issues see the GitHub page: <https://github.com/gierens/ranges>'
 }
 
 @test "-h overwrites other options" {
     run ranges -hH
     assert_success
     assert_output --partial 'Usage: ranges ['
-    assert_output --partial 'GitHub: https://github.com/gierens/ranges'
+    assert_output --partial 'issues see the GitHub page: <https://github.com/gierens/ranges>'
 }
 
 @test "--help overwrites other options" {
     run ranges --help -H
     assert_success
     assert_output --partial 'Usage: ranges ['
-    assert_output --partial 'GitHub: https://github.com/gierens/ranges'
+    assert_output --partial 'issues see the GitHub page: <https://github.com/gierens/ranges>'
 }
