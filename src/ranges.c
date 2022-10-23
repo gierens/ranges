@@ -501,10 +501,135 @@ int extract_ipv4_ranges(void)
     return EXIT_SUCCESS;
 }
 
+bool ipv6_eq(struct in6_addr *a, struct in6_addr *b)
+{
+    for (int i = 0; i < 16; i++) {
+        if (a->s6_addr[i] != b->s6_addr[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ipv6_le(struct in6_addr *a, struct in6_addr *b)
+{
+    for (int i = 0; i < 16; i++) {
+        if (a->s6_addr[i] < b->s6_addr[i]) {
+            return true;
+        }
+        if (a->s6_addr[i] > b->s6_addr[i]) {
+            return false;
+        }
+    }
+    return false;
+}
+
+bool ipv6_lt(struct in6_addr *a, struct in6_addr *b)
+{
+    return ipv6_le(a, b) && !ipv6_eq(a, b);
+}
+
+bool ipv6_gt(struct in6_addr *a, struct in6_addr *b)
+{
+    return !ipv6_le(a, b);
+}
+
+bool ipv6_ge(struct in6_addr *a, struct in6_addr *b)
+{
+    return !ipv6_lt(a, b);
+}
+
+void ipv6_inc(struct in6_addr *a)
+{
+    for (int i = 15; i >= 0; i--) {
+        if (a->s6_addr[i] == 255) {
+            a->s6_addr[i] = 0;
+        } else {
+            a->s6_addr[i]++;
+            return;
+        }
+    }
+    return;
+}
+
+bool ipv6_is_inc(struct in6_addr *a, struct in6_addr *b)
+{
+    struct in6_addr c;
+    memcpy(&c, b, sizeof(struct in6_addr));
+    ipv6_inc(&c);
+    return ipv6_eq(a, &c);
+}
+
+bool ipv6_gt_inc(struct in6_addr *a, struct in6_addr *b)
+{
+    struct in6_addr c;
+    memcpy(&c, b, sizeof(struct in6_addr));
+    ipv6_inc(&c);
+    return ipv6_gt(a, &c);
+}
+
 int extract_ipv6_ranges(void)
 {
-    fprintf(stderr, "Not implemented yet\n");
-    return EXIT_FAILURE;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t line_len = 0;
+    bool first = true;
+    struct in6_addr range_end;
+    struct in6_addr ip;
+    char ip_str[INET6_ADDRSTRLEN];
+
+    // loop over input lines
+    while ((line_len = getline(&line, &len, stdin)) != -1) {
+        // remove line terminator
+        line[line_len - 1] = '\0';
+        line_len--;
+
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
+        // parse ip address
+        if (inet_pton(AF_INET6, line, &ip) == 0) {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+
+        // identify range start and end, and output accordingly
+        if (first) {
+            inet_ntop(AF_INET6, &ip, ip_str, INET6_ADDRSTRLEN);
+            printf("%s ", ip_str);
+            memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
+            first = false;
+        } else {
+            if (ipv6_lt(&ip, &range_end)) {
+            // if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
+                fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
+                        line);
+                return EXIT_FAILURE;
+            }
+            if (ipv6_is_inc(&ip, &range_end)) {
+            // if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
+                memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
+            } else if (ipv6_gt_inc(&ip, &range_end)) {
+            // } else if (htonl(ip.s_addr) > htonl(range_end.s_addr) + 1) {
+                inet_ntop(AF_INET6, &range_end, ip_str, INET6_ADDRSTRLEN);
+                printf("%s\n", ip_str);
+                inet_ntop(AF_INET6, &ip, ip_str, INET6_ADDRSTRLEN);
+                printf("%s ", ip_str);
+                memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
+            }
+        }
+    }
+
+    // print remaining range end
+    if (!first) {
+        inet_ntop(AF_INET6, &range_end, ip_str, INET_ADDRSTRLEN);
+        printf("%s\n", ip_str);
+    }
+
+    free(line);
+    return EXIT_SUCCESS;
 }
 
 int mac_pton(const char *mac_str, uint8_t *mac)
