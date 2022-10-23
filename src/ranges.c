@@ -488,10 +488,106 @@ int extract_ipv6_ranges(void)
     return EXIT_FAILURE;
 }
 
+int mac_pton(const char *mac_str, uint8_t *mac)
+{
+    if (strlen(mac_str) != 17) {
+        return 0;
+    }
+
+    return 6 == sscanf(mac_str, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+                       mac, mac+1, mac+2, mac+3, mac+4, mac+5);
+}
+
+long long int mac_ntoll(uint8_t *mac)
+{
+    long long int mac_int = 0;
+
+    for (int i = 0; i < 6; i++) {
+        mac_int = (mac_int << 8) | mac[i];
+    }
+
+    return mac_int;
+}
+
+void mac_llton(long long int mac_int, uint8_t *mac)
+{
+    for (int i = 5; i >= 0; i--) {
+        mac[i] = mac_int & 0xff;
+        mac_int >>= 8;
+    }
+}
+
+int mac_ntop(const uint8_t *mac, char *mac_str)
+{
+    return sprintf(mac_str, "%02x:%02x:%02x:%02x:%02x:%02x",
+                   mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+}
+
 int extract_mac_ranges(void)
 {
-    fprintf(stderr, "Not implemented yet\n");
-    return EXIT_FAILURE;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t line_len = 0;
+    bool first = true;
+    long long int range_end = 0;
+    long long int mac_ll = 0;
+    uint8_t mac[6];
+    char mac_str[18];
+
+    // loop over input lines
+    while ((line_len = getline(&line, &len, stdin)) != -1) {
+        // remove line terminator
+        line[line_len - 1] = '\0';
+        line_len--;
+
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
+        // parse mac address
+        if (!mac_pton(line, mac)) {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+        mac_ll = mac_ntoll(mac);
+
+        // identify range start and end, and output accordingly
+        if (first) {
+            mac_llton(mac_ll, mac);
+            mac_ntop(mac, mac_str);
+            printf("%s ", mac_str);
+            range_end = mac_ll;
+            first = false;
+        } else {
+            if (mac_ll < range_end) {
+                fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
+                        line);
+                return EXIT_FAILURE;
+            }
+            if (mac_ll == range_end + 1) {
+                range_end = mac_ll;
+            } else if (mac_ll > range_end + 1) {
+                mac_llton(range_end, mac);
+                mac_ntop(mac, mac_str);
+                printf("%s\n", mac_str);
+                mac_llton(mac_ll, mac);
+                mac_ntop(mac, mac_str);
+                printf("%s ", mac_str);
+                range_end = mac_ll;
+            }
+        }
+    }
+
+    // print remaining range end
+    if (!first) {
+        mac_llton(range_end, mac);
+        mac_ntop(mac, mac_str);
+        printf("%s\n", mac_str);
+    }
+
+    free(line);
+    return EXIT_SUCCESS;
 }
 
 typedef int (*extract_range_function_t)(void);
