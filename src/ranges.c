@@ -32,8 +32,6 @@ void print_help(void)
            "don't need to be removed however.\n"
            "\n"
            "Optional arguments:\n"
-           // TODO file argument for operation on given file instead of stdin
-           // TODO -s for skipping not parsable stuff
            "  -H, --hex              Extract unsigned hexadecimal number "
            "ranges.\n"
            "  -o, --octal            Extract unsigned octal number ranges.\n"
