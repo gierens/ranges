@@ -518,17 +518,33 @@ bool ipv6_ge(struct in6_addr *a, struct in6_addr *b)
     return !ipv6_lt(a, b);
 }
 
-bool ipv6_inc(struct in6_addr *a)
+void ipv6_inc(struct in6_addr *a)
 {
     for (int i = 15; i >= 0; i--) {
         if (a->s6_addr[i] == 255) {
             a->s6_addr[i] = 0;
         } else {
             a->s6_addr[i]++;
-            return true;
+            return;
         }
     }
-    return false;
+    return;
+}
+
+bool ipv6_is_inc(struct in6_addr *a, struct in6_addr *b)
+{
+    struct in6_addr c;
+    memcpy(&c, b, sizeof(struct in6_addr));
+    ipv6_inc(&c);
+    return ipv6_eq(a, &c);
+}
+
+bool ipv6_gt_inc(struct in6_addr *a, struct in6_addr *b)
+{
+    struct in6_addr c;
+    memcpy(&c, b, sizeof(struct in6_addr));
+    ipv6_inc(&c);
+    return ipv6_gt(a, &c);
 }
 
 int extract_ipv6_ranges(void)
@@ -560,25 +576,25 @@ int extract_ipv6_ranges(void)
 
         // identify range start and end, and output accordingly
         if (first) {
-            inet_ntop(AF_INET6, &ip, ip_str, INET_ADDRSTRLEN);
+            inet_ntop(AF_INET6, &ip, ip_str, INET6_ADDRSTRLEN);
             printf("%s ", ip_str);
             memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
             first = false;
         } else {
-            // TODO
-            if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
+            if (ipv6_lt(&ip, &range_end)) {
+            // if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
                 return EXIT_FAILURE;
             }
-            // TODO
-            if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
+            if (ipv6_is_inc(&ip, &range_end)) {
+            // if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
                 memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
-            // TODO
-            } else if (htonl(ip.s_addr) > htonl(range_end.s_addr) + 1) {
-                inet_ntop(AF_INET6, &range_end, ip_str, INET_ADDRSTRLEN);
+            } else if (ipv6_gt_inc(&ip, &range_end)) {
+            // } else if (htonl(ip.s_addr) > htonl(range_end.s_addr) + 1) {
+                inet_ntop(AF_INET6, &range_end, ip_str, INET6_ADDRSTRLEN);
                 printf("%s\n", ip_str);
-                inet_ntop(AF_INET6, &ip, ip_str, INET_ADDRSTRLEN);
+                inet_ntop(AF_INET6, &ip, ip_str, INET6_ADDRSTRLEN);
                 printf("%s ", ip_str);
                 memcpy(range_end.s6_addr, ip.s6_addr, sizeof(range_end.s6_addr));
             }
