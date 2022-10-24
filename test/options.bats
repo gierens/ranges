@@ -10,6 +10,13 @@ setup() {
     assert_output --partial "invalid option -- 'z'"
     assert_output --partial 'Usage: ranges ['
     assert_output --partial "Try 'ranges -h' for more information"
+
+    run_with_memcheck ranges -z
+    assert_failure
+    assert_output --partial "invalid option -- 'z'"
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+    assert_memcheck_ok
 }
 
 @test "-Ho causes 'multible range type error'" {
@@ -18,6 +25,13 @@ setup() {
     assert_output --partial 'Error: Only one range type can be specified.'
     assert_output --partial 'Usage: ranges ['
     assert_output --partial "Try 'ranges -h' for more information"
+
+    run_with_memcheck ranges -Ho
+    assert_failure
+    assert_output --partial 'Error: Only one range type can be specified.'
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+    assert_memcheck_ok
 }
 
 @test "'ranges test' causes 'too many arguments error'" {
@@ -26,4 +40,11 @@ setup() {
     assert_output --partial 'Error: too many arguments'
     assert_output --partial 'Usage: ranges ['
     assert_output --partial "Try 'ranges -h' for more information"
+
+    run_with_memcheck ranges test
+    assert_failure
+    assert_output --partial 'Error: too many arguments'
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+    assert_memcheck_ok
 }
