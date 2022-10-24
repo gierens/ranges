@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#define _XOPEN_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -5,6 +7,7 @@
 #include <errno.h>
 #include <string.h>
 #include <limits.h>
+#include <time.h>
 #include <arpa/inet.h>
 
 
@@ -434,10 +437,149 @@ int extract_binary_number_ranges(void)
     return EXIT_SUCCESS;
 }
 
+bool date_exists(struct tm * date)
+{
+    struct tm check;
+    memcpy(&check, date, sizeof(struct tm));
+
+    check.tm_sec = 0;
+    check.tm_min = 0;
+    check.tm_hour = 12;
+    check.tm_isdst = -1;
+
+    mktime(&check);
+
+    if (check.tm_year != date->tm_year ||
+        check.tm_mon != date->tm_mon ||
+        check.tm_mday != date->tm_mday) {
+        return false;
+    }
+    return true;
+}
+
+bool date_eq(struct tm *a, struct tm *b)
+{
+    return a->tm_year == b->tm_year &&
+           a->tm_mon == b->tm_mon &&
+           a->tm_mday == b->tm_mday;
+}
+
+bool date_lt(struct tm *a, struct tm *b)
+{
+    return a->tm_year < b->tm_year ||
+           (a->tm_year == b->tm_year && a->tm_mon < b->tm_mon) ||
+           (a->tm_year == b->tm_year && a->tm_mon == b->tm_mon &&
+            a->tm_mday < b->tm_mday);
+}
+
+bool date_le(struct tm *a, struct tm *b)
+{
+    return date_eq(a, b) || date_lt(a, b);
+}
+
+bool date_gt(struct tm *a, struct tm *b)
+{
+    return !date_le(a, b);
+}
+
+bool date_ge(struct tm *a, struct tm *b)
+{
+    return !date_lt(a, b);
+}
+
+void date_inc(struct tm *date)
+{
+    date->tm_sec = 0;
+    date->tm_min = 0;
+    date->tm_hour = 12;
+    date->tm_isdst = -1;
+    date->tm_mday += 1;
+    mktime(date);
+}
+
+bool date_is_inc(struct tm *a, struct tm *b)
+{
+    struct tm c;
+    memcpy(&c, b, sizeof(struct tm));
+    date_inc(&c);
+    return date_eq(a, &c);
+}
+
+bool date_gt_inc(struct tm *a, struct tm *b)
+{
+    struct tm c;
+    memcpy(&c, b, sizeof(struct tm));
+    date_inc(&c);
+    return date_gt(a, &c);
+}
+
 int extract_date_ranges(void)
 {
-    fprintf(stderr, "Not implemented yet\n");
-    return EXIT_FAILURE;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t line_len = 0;
+    bool first = true;
+    struct tm range_end;
+    struct tm date;
+    char date_str[11];
+    char *invalid = NULL;
+
+    // loop over input lines
+    while ((line_len = getline(&line, &len, stdin)) != -1) {
+        // remove line terminator
+        line[line_len - 1] = '\0';
+        line_len--;
+
+        // skip empty lines
+        if (line_len == 0) {
+            continue;
+        }
+
+        // parse decimal number
+        invalid = strptime(line, "%F", &date);
+
+        // handle parsing errors
+        if (invalid - line != line_len) {
+            fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+        if (!date_exists(&date)) {
+            fprintf(stderr, "Error: Invalid date on line '%s'.\n", line);
+            return EXIT_FAILURE;
+        }
+
+        // identify range start and end, and output accordingly
+        if (first) {
+            strftime(date_str, 11, "%F", &date);
+            printf("%s ", date_str);
+            memcpy(&range_end, &date, sizeof(struct tm));
+            first = false;
+        } else {
+            if (date_lt(&date, &range_end)) {
+                fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
+                        line);
+                return EXIT_FAILURE;
+            }
+            if (date_is_inc(&date, &range_end)) {
+                memcpy(&range_end, &date, sizeof(struct tm));
+            } else if (date_gt_inc(&date, &range_end)) {
+                strftime(date_str, 11, "%F", &range_end);
+                printf("%s\n", date_str);
+                strftime(date_str, 11, "%F", &date);
+                printf("%s ", date_str);
+                memcpy(&range_end, &date, sizeof(struct tm));
+            }
+        }
+    }
+
+    // print remaining range end
+    if (!first) {
+        strftime(date_str, 11, "%F", &range_end);
+        printf("%s\n", date_str);
+    }
+
+    free(line);
+    return EXIT_SUCCESS;
 }
 
 int extract_ipv4_ranges(void)
