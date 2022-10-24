@@ -118,7 +118,6 @@ setup() {
     assert_output --partial "Error: Input is not sorted on line '2022-01-02'."
 }
 
-# TODO test year change
 @test "year change sequence 2022-12-01 2023-01-01 works" {
     run bash -c "printf '2022-12-31\n2023-01-01\n' | ranges -d"
     assert_success
