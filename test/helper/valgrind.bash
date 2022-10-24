@@ -1,7 +1,7 @@
 #!/use/bin/env bash
 
 _valgrind_setup() {
-    MEMCHECK="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all"
+    MEMCHECK="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes"
     MEMCHECK_OK_MSG1="All heap blocks were freed -- no leaks are possible"
     MEMCHECK_OK_MSG2="ERROR SUMMARY: 0 errors from 0 contexts"
 }
