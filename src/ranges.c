@@ -102,6 +102,7 @@ int extract_decimal_number_ranges(void)
     long long int number = 0;
     char *invalid = NULL;
     errno = 0;
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -120,21 +121,25 @@ int extract_decimal_number_ranges(void)
         // handle parsing errors
         if (invalid - line != line_len) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MIN) {
             fprintf(stderr, "Error: Underflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MAX) {
             fprintf(stderr, "Error: Overflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (errno) {
             fprintf(stderr, "Error: strtoll error %d (%s) on "
                     "input line '%s'.\n",
                     errno, strerror(errno), line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -146,7 +151,8 @@ int extract_decimal_number_ranges(void)
             if (number < range_end) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (number == range_end + 1) {
                 range_end = number;
@@ -163,8 +169,9 @@ int extract_decimal_number_ranges(void)
         printf("%lld\n", range_end);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 
@@ -178,6 +185,7 @@ int extract_hexadecimal_number_ranges(void)
     long long int number = 0;
     char *invalid = NULL;
     errno = 0;
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -193,7 +201,8 @@ int extract_hexadecimal_number_ranges(void)
         // check that line starts with 0x
         if (line_len < 3 || line[0] != '0' || line[1] != 'x') {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // parse decimal number
@@ -202,21 +211,25 @@ int extract_hexadecimal_number_ranges(void)
         // handle parsing errors
         if (invalid - line != line_len) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MIN) {
             fprintf(stderr, "Error: Underflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MAX) {
             fprintf(stderr, "Error: Overflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (errno) {
             fprintf(stderr, "Error: strtoll error %d (%s) on "
                     "input line '%s'.\n",
                     errno, strerror(errno), line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -228,7 +241,8 @@ int extract_hexadecimal_number_ranges(void)
             if (number < range_end) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (number == range_end + 1) {
                 range_end = number;
@@ -245,8 +259,9 @@ int extract_hexadecimal_number_ranges(void)
         printf("0x%llx\n", range_end);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 int extract_octal_number_ranges(void)
@@ -259,6 +274,7 @@ int extract_octal_number_ranges(void)
     long long int number = 0;
     char *invalid = NULL;
     errno = 0;
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -274,7 +290,8 @@ int extract_octal_number_ranges(void)
         // check that line starts with 0x
         if (line_len < 3 || line[0] != '0' || line[1] != 'o') {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // parse decimal number
@@ -283,21 +300,25 @@ int extract_octal_number_ranges(void)
         // handle parsing errors
         if (invalid - line != line_len) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MIN) {
             fprintf(stderr, "Error: Underflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MAX) {
             fprintf(stderr, "Error: Overflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (errno) {
             fprintf(stderr, "Error: strtoll error %d (%s) on "
                     "input line '%s'.\n",
                     errno, strerror(errno), line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -309,7 +330,8 @@ int extract_octal_number_ranges(void)
             if (number < range_end) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (number == range_end + 1) {
                 range_end = number;
@@ -326,8 +348,9 @@ int extract_octal_number_ranges(void)
         printf("0o%llo\n", range_end);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 void lltobinstr(long long int number, char * binary)
@@ -362,6 +385,7 @@ int extract_binary_number_ranges(void)
     char *invalid = NULL;
     errno = 0;
     char binary[67];
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -377,7 +401,8 @@ int extract_binary_number_ranges(void)
         // check that line starts with 0x
         if (line_len < 3 || line[0] != '0' || line[1] != 'b') {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // parse decimal number
@@ -386,21 +411,25 @@ int extract_binary_number_ranges(void)
         // handle parsing errors
         if (invalid - line != line_len) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MIN) {
             fprintf(stderr, "Error: Underflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (number == LLONG_MAX) {
             fprintf(stderr, "Error: Overflow on input line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (errno) {
             fprintf(stderr, "Error: strtoll error %d (%s) on "
                     "input line '%s'.\n",
                     errno, strerror(errno), line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -413,7 +442,8 @@ int extract_binary_number_ranges(void)
             if (number < range_end) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (number == range_end + 1) {
                 range_end = number;
@@ -433,8 +463,9 @@ int extract_binary_number_ranges(void)
         printf("%s\n", binary);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 bool date_exists(struct tm * date)
@@ -519,10 +550,11 @@ int extract_date_ranges(void)
     size_t len = 0;
     ssize_t line_len = 0;
     bool first = true;
-    struct tm range_end;
-    struct tm date;
-    char date_str[11];
+    struct tm range_end = {0};
+    struct tm date = {0};
+    char date_str[11] = {0};
     char *invalid = NULL;
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -541,11 +573,13 @@ int extract_date_ranges(void)
         // handle parsing errors
         if (invalid - line != line_len) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         if (!date_exists(&date)) {
             fprintf(stderr, "Error: Invalid date on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -558,7 +592,8 @@ int extract_date_ranges(void)
             if (date_lt(&date, &range_end)) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (date_is_inc(&date, &range_end)) {
                 memcpy(&range_end, &date, sizeof(struct tm));
@@ -578,8 +613,9 @@ int extract_date_ranges(void)
         printf("%s\n", date_str);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 int extract_ipv4_ranges(void)
@@ -591,6 +627,7 @@ int extract_ipv4_ranges(void)
     struct in_addr range_end;
     struct in_addr ip;
     char ip_str[INET_ADDRSTRLEN];
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -606,7 +643,8 @@ int extract_ipv4_ranges(void)
         // parse ip address
         if (inet_pton(AF_INET, line, &ip) == 0) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -619,7 +657,8 @@ int extract_ipv4_ranges(void)
             if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
                 range_end.s_addr = ip.s_addr;
@@ -639,8 +678,9 @@ int extract_ipv4_ranges(void)
         printf("%s\n", ip_str);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 bool ipv6_eq(struct in6_addr *a, struct in6_addr *b)
@@ -719,6 +759,7 @@ int extract_ipv6_ranges(void)
     struct in6_addr range_end;
     struct in6_addr ip;
     char ip_str[INET6_ADDRSTRLEN];
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -734,7 +775,8 @@ int extract_ipv6_ranges(void)
         // parse ip address
         if (inet_pton(AF_INET6, line, &ip) == 0) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
 
         // identify range start and end, and output accordingly
@@ -748,7 +790,8 @@ int extract_ipv6_ranges(void)
             // if (htonl(ip.s_addr) < htonl(range_end.s_addr)) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (ipv6_is_inc(&ip, &range_end)) {
             // if (htonl(ip.s_addr) == htonl(range_end.s_addr) + 1) {
@@ -770,8 +813,9 @@ int extract_ipv6_ranges(void)
         printf("%s\n", ip_str);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 int mac_pton(const char *mac_str, uint8_t *mac)
@@ -819,6 +863,7 @@ int extract_mac_ranges(void)
     long long int mac_ll = 0;
     uint8_t mac[6];
     char mac_str[18];
+    int rc = EXIT_SUCCESS;
 
     // loop over input lines
     while ((line_len = getline(&line, &len, stdin)) != -1) {
@@ -834,7 +879,8 @@ int extract_mac_ranges(void)
         // parse mac address
         if (!mac_pton(line, mac)) {
             fprintf(stderr, "Error: Wrong input format on line '%s'.\n", line);
-            return EXIT_FAILURE;
+            rc = EXIT_FAILURE;
+            goto out;
         }
         mac_ll = mac_ntoll(mac);
 
@@ -849,7 +895,8 @@ int extract_mac_ranges(void)
             if (mac_ll < range_end) {
                 fprintf(stderr, "Error: Input is not sorted on line '%s'.\n",
                         line);
-                return EXIT_FAILURE;
+                rc = EXIT_FAILURE;
+                goto out;
             }
             if (mac_ll == range_end + 1) {
                 range_end = mac_ll;
@@ -872,8 +919,9 @@ int extract_mac_ranges(void)
         printf("%s\n", mac_str);
     }
 
+out:
     free(line);
-    return EXIT_SUCCESS;
+    return rc;
 }
 
 typedef int (*extract_range_function_t)(void);

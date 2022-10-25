@@ -1,14 +1,16 @@
 name: tests
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: install valgrind
+        run: sudo apt update && sudo apt install -y valgrind
       - name: Checkout repository
         uses: actions/checkout@v3
         with:

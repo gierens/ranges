@@ -1,11 +1,11 @@
 CC=gcc
-CFLAGS=-O3
+CFLAGS=-O3 -Wall -Werror
 
 .PHONY: all
 all: bin/ranges
 
 bin/%: src/%.c
-	$(CC) $(CFLAGS) $< -o $@	
+	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: setup
 setup:
