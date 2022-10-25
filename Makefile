@@ -5,7 +5,7 @@ CFLAGS=-O3
 all: bin/ranges
 
 bin/%: src/%.c
-	$(CC) $(CFLAGS) $< -o $@	
+	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: setup
 setup:
