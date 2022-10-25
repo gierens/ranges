@@ -550,9 +550,9 @@ int extract_date_ranges(void)
     size_t len = 0;
     ssize_t line_len = 0;
     bool first = true;
-    struct tm range_end;
-    struct tm date;
-    char date_str[11];
+    struct tm range_end = {0};
+    struct tm date = {0};
+    char date_str[11] = {0};
     char *invalid = NULL;
     int rc = EXIT_SUCCESS;
 
