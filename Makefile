@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-O3 -Wall -Werror
 DESTDIR=/usr/bin
+DOCDIR=/usr/share/man/man1
 
 .PHONY: all
 all: bin/ranges
@@ -21,13 +22,24 @@ tests: all
 clean:
 	rm -f bin/*
 
+.PHONY: docs
+docs: docs/ranges.1.gz
+
+docs/%.gz: docs/%
+	gzip -c $< > $@
+
+docs/%: docs/%.md
+	pandoc $< -s -t man -o $@
+
 .PHONY: install
-install: all
+install: all docs
 	install -d $(DESTDIR)
 	install -m 755 bin/ranges $(DESTDIR)
-	ln -s $(DESTDIR)/ranges $(DESTDIR)/rn
+	install -m 644 docs/ranges.1.gz $(DOCDIR)
+	mandb --quiet
 
 .PHONY: uninstall
 uninstall:
 	rm -f $(DESTDIR)/ranges
-	rm -f $(DESTDIR)/rn
+	rm -f $(DOCDIR)/ranges.1.gz
+	mandb --quiet
