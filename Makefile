@@ -26,3 +26,8 @@ install: all
 	install -d $(DESTDIR)
 	install -m 755 bin/ranges $(DESTDIR)
 	ln -s $(DESTDIR)/ranges $(DESTDIR)/rn
+
+.PHONY: uninstall
+uninstall:
+	rm -f $(DESTDIR)/ranges
+	rm -f $(DESTDIR)/rn
