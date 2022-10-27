@@ -21,6 +21,7 @@ tests: all
 .PHONY: clean
 clean:
 	rm -f bin/*
+	rm -f docs/*.1 docs/*.1.gz
 
 .PHONY: docs
 docs: docs/ranges.1.gz
