@@ -1,3 +1,4 @@
 bin/*
 docs/*.1
 docs/*.gz
+*.deb
