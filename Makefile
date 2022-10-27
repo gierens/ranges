@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O3 -Wall -Werror
+CFLAGS=-O3 -Wall -Wextra -Werror
 DESTDIR=/usr/bin
 DOCDIR=/usr/share/man/man1
 
