@@ -53,6 +53,9 @@ The shortened format is also supported, so for example ::1.
 : Extract ranges from a list of MAC addresses in the format MM:MM:MM:MM:MM:MM,
 with M being a hexadecimal digit, so for example 00:12:34:ab:cd:ef.
 
+**-s**, **\--size**
+: Count the ranges' sizes and output them in the third column.
+
 **-f**, **\--force**
 : Force the execution, so ignore parsing errors, like malformed IPv6
 addresses.
