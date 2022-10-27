@@ -16,7 +16,7 @@ setup:
 
 .PHONY: tests
 tests: all
-	test/deps/bats/bin/bats test/*.bats
+	test/deps/bats/bin/bats -j `nproc` test/*.bats
 
 .PHONY: clean
 clean:
