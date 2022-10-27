@@ -9,7 +9,7 @@ date: October 25, 2022
 **ranges** - Command line program to extract ranges from the inputted list.
 
 # SYNOPSIS
-**ranges** [-H|-o|-b|-d|-i|-I|-m] [-h]
+**ranges** [-H|-o|-b|-d|-i|-I|-m] [-f] [-h]
 
 # DESCRIPTION
 **ranges** is a command line program written in C that extracts ranges from
@@ -52,6 +52,10 @@ The shortened format is also supported, so for example ::1.
 **-m**, **--mac**
 : Extract ranges from a list of MAC addresses in the format MM:MM:MM:MM:MM:MM,
 with M being a hexadecimal digit, so for example 00:12:34:ab:cd:ef.
+
+**-f**, **--force**
+: Force the execution, so ignore parsing errors, like malformed IPv6
+addresses.
 
 **-h**, **--help**
 : Print the help message, containing a summary of this manual page.
