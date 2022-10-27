@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O3 -Wall -Werror
+CFLAGS=-O3 -Wall -Wextra -Werror
 DESTDIR=/usr/bin
 DOCDIR=/usr/share/man/man1
 
@@ -16,11 +16,12 @@ setup:
 
 .PHONY: tests
 tests: all
-	test/deps/bats/bin/bats test/*.bats
+	test/deps/bats/bin/bats -j `nproc` test/*.bats
 
 .PHONY: clean
 clean:
 	rm -f bin/*
+	rm -f docs/*.1 docs/*.1.gz
 
 .PHONY: docs
 docs: docs/ranges.1.gz

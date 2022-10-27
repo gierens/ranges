@@ -222,7 +222,7 @@ setup() {
     assert_failure
     assert_output --partial "Error: Overflow on input line '0b1000000000000000000000000000000000000000000000000000000000000000'."
 
-    run_pipe_with_memcheck "printf '0b1000000000000000000000000000000000000000000000000000000000000000\n'" "ranges -b"
+    run_pipe_with_memcheck "printf '0b1000000000000000000000000000000000000000000000000000000000000000\n'" "ranges --binary"
     assert_failure
     assert_output --partial "Error: Overflow on input line '0b1000000000000000000000000000000000000000000000000000000000000000'."
     assert_memcheck_ok
@@ -242,7 +242,7 @@ setup() {
     assert_failure
     assert_output --partial "Error: Input is not sorted on line '0b10'."
 
-    run_pipe_with_memcheck "printf '0b1\n0b10\n0b11\n0b10\n0b111\n0b1000\n0b1001\n'" "ranges -b"
+    run_pipe_with_memcheck "printf '0b1\n0b10\n0b11\n0b10\n0b111\n0b1000\n0b1001\n'" "ranges --binary"
     assert_failure
     assert_output --partial "Error: Input is not sorted on line '0b10'."
     assert_memcheck_ok

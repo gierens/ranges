@@ -1,15 +1,15 @@
----
+\---
 title: RANGES
 section: 1
 header: User Manual
 footer: ranges 0.1
 date: October 25, 2022
----
+\---
 # NAME
 **ranges** - Command line program to extract ranges from the inputted list.
 
 # SYNOPSIS
-**ranges** [-H|-o|-b|-d|-i|-I|-m] [-h]
+**ranges** [-H|-o|-b|-d|-i|-I|-m] [-f] [-h]
 
 # DESCRIPTION
 **ranges** is a command line program written in C that extracts ranges from
@@ -24,39 +24,46 @@ When no other range type is given, the program will extract ranges form a
 list of signed decimal numbers in the format DDD...D with D being a decimal
 digit. An example number would be 1234.
 
-**-H**, **--hex**
+**-H**, **\--hex**
 : Extract ranges from a list of unsigned hexadecimal numbers in the format
 0xHHH...H with H being a hexadecimal digit, for example 0x12ab.
 
-**-o**, **--octal**
+**-o**, **\--octal**
 : Extract ranges from a list of unsigned octal numbers in the format
 0oOOO...O with O being an octal digit, for example 0o0127.
 
-**-b**, **--binary**
+**-b**, **\--binary**
 : Extract ranges from a list of unsigned binary numbers in the format
 0bBBB...B with B being a binary digit, for example 0b0110.
 
-**-d**, **--date**
+**-d**, **\--date**
 : Extract ranges from a list of dates in the format YYYY-MM-DD, with YYYY
 being the year, MM the month, and DD the month day, for example 2022-10-25.
 
-**-i**, **--ipv4**
+**-i**, **\--ipv4**
 : Extract ranges from a list of IPv4 addresses in the format iii.iii.iii.iii,
 with iii being a decimal number between 0 and 255, for example 127.0.0.1 .
 
-**-I**, **--ipv6**
+**-I**, **\--ipv6**
 : Extract ranges from a list of IPv6 addresses either in the full format
 IIII:IIII:IIII:IIII:IIII:IIII:IIII:IIII with I being a hexadecimal digit.
 The shortened format is also supported, so for example ::1.
 
-**-m**, **--mac**
+**-m**, **\--mac**
 : Extract ranges from a list of MAC addresses in the format MM:MM:MM:MM:MM:MM,
 with M being a hexadecimal digit, so for example 00:12:34:ab:cd:ef.
 
-**-h**, **--help**
+**-s**, **\--size**
+: Count the ranges' sizes and output them in the third column.
+
+**-f**, **\--force**
+: Force the execution, so ignore parsing errors, like malformed IPv6
+addresses.
+
+**-h**, **\--help**
 : Print the help message, containing a summary of this manual page.
 
-**-v**, **--version**
+**-v**, **\--version**
 : Print version, copyright and license information.
 
 # EXAMPLES
@@ -64,7 +71,7 @@ with M being a hexadecimal digit, so for example 00:12:34:ab:cd:ef.
 : Default decimal number range extraction with will return the ranges
 1 to 3 and 6 to 8 in the format: \'1 2\\n3 4\\n\'
 
-**printf \'1.0.0.1\\n1.0.0.2\\n1.1.1.1\\n\' | ranges --ipv4**
+**printf \'1.0.0.1\\n1.0.0.2\\n1.1.1.1\\n\' | ranges \--ipv4**
 : Default decimal number range extraction with will return the ranges
 1 to 3 and 6 to 8 in the format: \'1.0.0.1 1.0.0.2\\n1.1.1.1 1.1.1.1\\n\'
 
