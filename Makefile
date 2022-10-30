@@ -134,6 +134,9 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 	# clean up
 	rm -rf $(DEB_TMP_DIR)
 
+deb-tests: $(DEB_PACKAGE)
+	lintian $(DEB_PACKAGE)
+
 .PHONY: clean
 clean:
 	rm -f bin/*
