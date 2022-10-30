@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install GCC 11
+        run: sudo apt update && sudo apt install -y gcc-11
       - name: Show GCC version
         run: gcc --version
       - name: Checkout repository

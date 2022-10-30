@@ -9,8 +9,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: install valgrind
-        run: sudo apt update && sudo apt install -y valgrind
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
