@@ -31,6 +31,41 @@ Description: Command line program to extract ranges from the inputted list.
 endef
 export DEB_CONTROL
 
+define DEB_COPYRIGHT
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: $(NAME)
+Upstream-Contact: Sandro-Alessio Gierens <sandro@gierens.de>
+Source: https://github.com/gierens/ranges/releases
+
+Files: *
+License: GPL-3+
+Copyright: 2022 Sandro-Alessio Gierens <sandro@gierens.de>
+
+Files: debian/*
+License: GPL-3+
+Copyright: 2022 Sandro-Alessio Gierens <sandro@gierens.de>
+
+License: GPL-3+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/GPL-3'.
+endef
+export DEB_COPYRIGHT
+
 
 .PHONY: bin
 bin: $(BINARY)
@@ -91,6 +126,9 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 	cp CHANGELOG.md $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
 	gzip -cn9 $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog > $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog.gz
 	rm $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
+	# copyright file
+	touch $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/copyright
+	@echo "$$DEB_COPYRIGHT" > $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/copyright
 	# build package
 	dpkg-deb --build --root-owner-group $(DEB_TMP_DIR)
 	# clean up
