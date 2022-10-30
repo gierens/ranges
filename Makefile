@@ -73,7 +73,7 @@ uninstall:
 
 .PHONY: deb
 deb: $(DEB_PACKAGE)
-$(DEB_PACKAGE): $(BINARY) $(MANPAGE)
+$(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 	# create temporary build directory
 	mkdir -p $(DEB_TMP_DIR)
 	# binary
