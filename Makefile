@@ -46,7 +46,7 @@ setup:
 	git submodule update
 
 .PHONY: tests
-tests: all
+tests: $(BINARY)
 	test/deps/bats/bin/bats -j `nproc` test/*.bats
 
 .PHONY: docs
