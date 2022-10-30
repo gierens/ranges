@@ -96,7 +96,7 @@ static struct option long_options[] = {
 static const char* optstring = "HobdiImsfhv";
 
 
-int extract_decimal_number_ranges(int print_size, int force)
+int extract_decimal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -110,7 +110,7 @@ int extract_decimal_number_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -206,7 +206,7 @@ out:
 }
 
 
-int extract_hexadecimal_number_ranges(int print_size, int force)
+int extract_hexadecimal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -220,7 +220,7 @@ int extract_hexadecimal_number_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -325,7 +325,7 @@ out:
     return rc;
 }
 
-int extract_octal_number_ranges(int print_size, int force)
+int extract_octal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -339,7 +339,7 @@ int extract_octal_number_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -465,7 +465,7 @@ void lltobinstr(long long int number, char * binary)
     binary[j] = '\0';
 }
 
-int extract_binary_number_ranges(int print_size, int force)
+int extract_binary_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -480,7 +480,7 @@ int extract_binary_number_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -665,7 +665,7 @@ bool date_gt_inc(struct tm *a, struct tm *b)
     return date_gt(a, &c);
 }
 
-int extract_date_ranges(int print_size, int force)
+int extract_date_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -679,7 +679,7 @@ int extract_date_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -757,7 +757,7 @@ out:
     return rc;
 }
 
-int extract_ipv4_ranges(int print_size, int force)
+int extract_ipv4_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -770,7 +770,7 @@ int extract_ipv4_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -907,7 +907,7 @@ bool ipv6_gt_inc(struct in6_addr *a, struct in6_addr *b)
     return ipv6_gt(a, &c);
 }
 
-int extract_ipv6_ranges(int print_size, int force)
+int extract_ipv6_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -920,7 +920,7 @@ int extract_ipv6_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -1025,7 +1025,7 @@ int mac_ntop(const uint8_t *mac, char *mac_str)
                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
 
-int extract_mac_ranges(int print_size, int force)
+int extract_mac_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -1039,7 +1039,7 @@ int extract_mac_ranges(int print_size, int force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -1114,7 +1114,7 @@ out:
     return rc;
 }
 
-typedef int (*extract_range_function_t)(int, int);
+typedef int (*extract_range_function_t)(FILE *, int, int);
 
 
 static inline void check_range_type_unset(extract_range_function_t function)
@@ -1132,6 +1132,7 @@ int main(int argc, char *argv[])
     extract_range_function_t extract_range_function = NULL;
     int print_size = (int) false;
     int force = (int) false;
+    FILE *stream = stdin;
 
     // option character
     int c;
@@ -1228,5 +1229,5 @@ int main(int argc, char *argv[])
     }
 
     // extract ranges based on specified type
-    return extract_range_function(print_size, force);
+    return extract_range_function(stream, print_size, force);
 }
