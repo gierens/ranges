@@ -19,7 +19,7 @@ Version: $(VERSION)
 Section: utils
 Priority: optional
 Architecture: $(ARCH)
-Depends:
+Depends: libc6
 Maintainer: Sandro-Alessio Gierens <sandro@gierens.de>
 Description: Command line program to extract ranges from the inputted list.
  ranges is a command line program written in C that extracts ranges from
