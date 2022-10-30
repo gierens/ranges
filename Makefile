@@ -53,7 +53,7 @@ tests: all
 docs: $(MANPAGE)
 
 docs/%.gz: docs/%
-	gzip -c $< > $@
+	gzip -cn9 $< > $@
 
 docs/%: docs/%.md
 	pandoc $< -s -t man -o $@
