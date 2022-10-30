@@ -38,6 +38,7 @@ bin: $(BINARY)
 bin/%: src/%.c
 	# $(ASAN_OPTIONS) $(CC) $(CFLAGS) $< -o $@
 	$(CC) $(CFLAGS) $< -o $@
+	strip --strip-unneeded --remove-section=.comment --remove-section=.note $@
 
 .PHONY: setup
 setup:
