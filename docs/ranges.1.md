@@ -1,10 +1,10 @@
-\---
+---
 title: RANGES
 section: 1
 header: User Manual
 footer: ranges 0.1
 date: October 25, 2022
-\---
+---
 # NAME
 **ranges** - Command line program to extract ranges from the inputted list.
 
