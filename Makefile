@@ -86,6 +86,11 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 	mkdir -p $(DEB_TMP_DIR)/DEBIAN
 	touch $(DEB_TMP_DIR)/DEBIAN/control
 	@echo "$$DEB_CONTROL" > $(DEB_TMP_DIR)/DEBIAN/control
+	# changelog
+	mkdir -p $(DEB_TMP_DIR)/usr/share/doc/$(NAME)
+	cp CHANGELOG.md $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
+	gzip -cn9 $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog > $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog.gz
+	rm $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
 	# build package
 	dpkg-deb --build --root-owner-group $(DEB_TMP_DIR)
 	# clean up
