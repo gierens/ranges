@@ -50,6 +50,10 @@ setup() {
 }
 
 @test "ranges with tty input causes 'no input error'" {
+    if [ ! -f /dev/tty ]; then
+        skip "no /dev/tty device"
+    fi
+
     run ranges < /dev/tty
     assert_failure
     assert_output --partial 'Error: No input given. You must provide a file or pipe!'
