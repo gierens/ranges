@@ -14,7 +14,7 @@
 
 void print_usage(void)
 {
-    printf("Usage: ranges [-H|-o|-b|-d|-i|-I|-m] [-s] [-f] [-h]\n");
+    printf("Usage: ranges [-H|-o|-b|-d|-i|-I|-m] [-s] [-f] [-h] [FILE]\n");
 }
 
 void print_usage_with_help_remark(void)
@@ -36,6 +36,8 @@ void print_help(void)
            "don't need to be removed however.\n"
            "\n"
            "Optional arguments:\n"
+           "  FILE            Path to input file. If not specified, stdin is "
+           "                  used, which has to be a pipe and not a tty.\n"
            "  -H, --hex       Extract unsigned hexadecimal number "
            "ranges. (Format: 0x1)\n"
            "  -o, --octal     Extract unsigned octal number ranges. "
