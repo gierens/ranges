@@ -49,6 +49,21 @@ setup() {
     rm ranges_test_stdin_1
 }
 
+@test "ranges with tty input causes 'no input error'" {
+    run ranges < /dev/tty
+    assert_failure
+    assert_output --partial 'Error: No input given. You must provide a file or pipe!'
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+
+    run_with_memcheck ranges < /dev/tty
+    assert_failure
+    assert_output --partial 'Error: No input given. You must provide a file or pipe!'
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+    assert_memcheck_ok
+}
+
 @test "'ranges test test' causes 'too many arguments error'" {
     run ranges test test
     assert_failure
