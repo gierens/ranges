@@ -2,10 +2,12 @@
 #define _XOPEN_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <getopt.h>
 #include <stdbool.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <limits.h>
 #include <time.h>
 #include <arpa/inet.h>
@@ -13,7 +15,7 @@
 
 void print_usage(void)
 {
-    printf("Usage: ranges [-H|-o|-b|-d|-i|-I|-m] [-s] [-f] [-h]\n");
+    printf("Usage: ranges [-H|-o|-b|-d|-i|-I|-m] [-s] [-f] [-h] [FILE]\n");
 }
 
 void print_usage_with_help_remark(void)
@@ -35,6 +37,8 @@ void print_help(void)
            "don't need to be removed however.\n"
            "\n"
            "Optional arguments:\n"
+           "  FILE            Path to input file. If not specified, stdin is "
+           "                  used, which has to be a pipe and not a tty.\n"
            "  -H, --hex       Extract unsigned hexadecimal number "
            "ranges. (Format: 0x1)\n"
            "  -o, --octal     Extract unsigned octal number ranges. "
@@ -96,7 +100,7 @@ static struct option long_options[] = {
 static const char* optstring = "HobdiImsfhv";
 
 
-int extract_decimal_number_ranges(bool print_size, bool force)
+int extract_decimal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -110,7 +114,7 @@ int extract_decimal_number_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -206,7 +210,7 @@ out:
 }
 
 
-int extract_hexadecimal_number_ranges(bool print_size, bool force)
+int extract_hexadecimal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -220,7 +224,7 @@ int extract_hexadecimal_number_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -281,7 +285,7 @@ int extract_hexadecimal_number_ranges(bool print_size, bool force)
 
         // identify range start and end, and output accordingly
         if (first) {
-            printf("0x%llx ", number);
+            printf("0x%llx ", (long long unsigned int) number);
             range_end = number;
             first = false;
             if (print_size) {
@@ -300,12 +304,12 @@ int extract_hexadecimal_number_ranges(bool print_size, bool force)
                     range_size++;
                 }
             } else if (number > range_end + 1) {
-                printf("0x%llx", range_end);
+                printf("0x%llx", (long long unsigned int) range_end);
                 if (print_size) {
                     printf(" %zu", range_size);
                     range_size = 1;
                 }
-                printf("\n0x%llx ", number);
+                printf("\n0x%llx ", (long long unsigned int) number);
                 range_end = number;
             }
         }
@@ -313,7 +317,7 @@ int extract_hexadecimal_number_ranges(bool print_size, bool force)
 
     // print remaining range end
     if (!first) {
-        printf("0x%llx", range_end);
+        printf("0x%llx", (long long unsigned int) range_end);
         if (print_size) {
             printf(" %zu", range_size);
         }
@@ -325,7 +329,7 @@ out:
     return rc;
 }
 
-int extract_octal_number_ranges(bool print_size, bool force)
+int extract_octal_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -339,7 +343,7 @@ int extract_octal_number_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -400,7 +404,7 @@ int extract_octal_number_ranges(bool print_size, bool force)
 
         // identify range start and end, and output accordingly
         if (first) {
-            printf("0o%llo ", number);
+            printf("0o%llo ", (long long unsigned int) number);
             range_end = number;
             first = false;
             if (print_size) {
@@ -419,12 +423,12 @@ int extract_octal_number_ranges(bool print_size, bool force)
                     range_size++;
                 }
             } else if (number > range_end + 1) {
-                printf("0o%llo", range_end);
+                printf("0o%llo", (long long unsigned int) range_end);
                 if (print_size) {
                     printf(" %zu", range_size);
                     range_size = 1;
                 }
-                printf("\n0o%llo ", number);
+                printf("\n0o%llo ", (long long unsigned int) number);
                 range_end = number;
             }
         }
@@ -432,7 +436,7 @@ int extract_octal_number_ranges(bool print_size, bool force)
 
     // print remaining range end
     if (!first) {
-        printf("0o%llo", range_end);
+        printf("0o%llo", (long long unsigned int) range_end);
         if (print_size) {
             printf(" %zu", range_size);
         }
@@ -452,7 +456,7 @@ void lltobinstr(long long int number, char * binary)
     binary[0] = '0';
     binary[1] = 'b';
     for (i = 0, j = 2; i < 64; i++) {
-        if (number & 0x8000000000000000) {
+        if (number & (long long int) 0x8000000000000000) {
             binary[j++] = '1';
         } else if (j > 2) {
             binary[j++] = '0';
@@ -465,7 +469,7 @@ void lltobinstr(long long int number, char * binary)
     binary[j] = '\0';
 }
 
-int extract_binary_number_ranges(bool print_size, bool force)
+int extract_binary_number_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -480,7 +484,7 @@ int extract_binary_number_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -665,7 +669,7 @@ bool date_gt_inc(struct tm *a, struct tm *b)
     return date_gt(a, &c);
 }
 
-int extract_date_ranges(bool print_size, bool force)
+int extract_date_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -679,7 +683,7 @@ int extract_date_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -709,7 +713,7 @@ int extract_date_ranges(bool print_size, bool force)
 
         // identify range start and end, and output accordingly
         if (first) {
-            strftime(date_str, 11, "%F", &date);
+            strftime(date_str, (size_t) 11, "%F", &date);
             printf("%s ", date_str);
             memcpy(&range_end, &date, sizeof(struct tm));
             first = false;
@@ -729,13 +733,13 @@ int extract_date_ranges(bool print_size, bool force)
                     range_size++;
                 }
             } else if (date_gt_inc(&date, &range_end)) {
-                strftime(date_str, 11, "%F", &range_end);
+                strftime(date_str, (size_t) 11, "%F", &range_end);
                 printf("%s", date_str);
                 if (print_size) {
                     printf(" %zu", range_size);
                     range_size = 1;
                 }
-                strftime(date_str, 11, "%F", &date);
+                strftime(date_str, (size_t) 11, "%F", &date);
                 printf("\n%s ", date_str);
                 memcpy(&range_end, &date, sizeof(struct tm));
             }
@@ -744,7 +748,7 @@ int extract_date_ranges(bool print_size, bool force)
 
     // print remaining range end
     if (!first) {
-        strftime(date_str, 11, "%F", &range_end);
+        strftime(date_str, (size_t) 11, "%F", &range_end);
         printf("%s", date_str);
         if (print_size) {
             printf(" %zu", range_size);
@@ -757,7 +761,7 @@ out:
     return rc;
 }
 
-int extract_ipv4_ranges(bool print_size, bool force)
+int extract_ipv4_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -770,7 +774,7 @@ int extract_ipv4_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -907,7 +911,7 @@ bool ipv6_gt_inc(struct in6_addr *a, struct in6_addr *b)
     return ipv6_gt(a, &c);
 }
 
-int extract_ipv6_ranges(bool print_size, bool force)
+int extract_ipv6_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -920,7 +924,7 @@ int extract_ipv6_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -1014,7 +1018,7 @@ long long int mac_ntoll(uint8_t *mac)
 void mac_llton(long long int mac_int, uint8_t *mac)
 {
     for (int i = 5; i >= 0; i--) {
-        mac[i] = mac_int & 0xff;
+        mac[i] = (uint8_t) (mac_int & 0xff);
         mac_int >>= 8;
     }
 }
@@ -1025,7 +1029,7 @@ int mac_ntop(const uint8_t *mac, char *mac_str)
                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
 
-int extract_mac_ranges(bool print_size, bool force)
+int extract_mac_ranges(FILE *stream, int print_size, int force)
 {
     char *line = NULL;
     size_t len = 0;
@@ -1039,7 +1043,7 @@ int extract_mac_ranges(bool print_size, bool force)
     size_t range_size = 0;
 
     // loop over input lines
-    while ((line_len = getline(&line, &len, stdin)) != -1) {
+    while ((line_len = getline(&line, &len, stream)) != -1) {
         // remove line terminator
         line[line_len - 1] = '\0';
         line_len--;
@@ -1114,7 +1118,7 @@ out:
     return rc;
 }
 
-typedef int (*extract_range_function_t)(bool, bool);
+typedef int (*extract_range_function_t)(FILE *, int, int);
 
 
 static inline void check_range_type_unset(extract_range_function_t function)
@@ -1127,11 +1131,21 @@ static inline void check_range_type_unset(extract_range_function_t function)
 }
 
 
+static inline bool isregfile(const char *path)
+{
+    struct stat path_stat = {0};
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
+
 int main(int argc, char *argv[])
 {
     extract_range_function_t extract_range_function = NULL;
-    bool print_size = false;
-    bool force = false;
+    int print_size = (int) false;
+    int force = (int) false;
+    FILE *stream = NULL;
+    int rc;
 
     // option character
     int c;
@@ -1183,11 +1197,11 @@ int main(int argc, char *argv[])
                 break;
 
             case 's':
-                print_size = true;
+                print_size = (int) true;
                 break;
 
             case 'f':
-                force = true;
+                force = (int) true;
                 break;
 
             case 'h':
@@ -1205,14 +1219,37 @@ int main(int argc, char *argv[])
             default:
                 fprintf(stderr,
                     "Error: getopt returned unrecognized "
-                    "character code 0%o.\n",
+                    "character code 0%c.\n",
                     c);
                 return EXIT_FAILURE;
         }
     }
 
-    // check that no extra arguments given
-    if (optind != argc) {
+    // open file if given, and check that not too much or too few arguments
+    if (optind == argc) {
+        if (isatty(STDIN_FILENO)) {
+            fprintf(stderr, "Error: No input given. You must provide a "
+                    "file or pipe!\n");
+            print_usage_with_help_remark();
+            return EXIT_FAILURE;
+        }
+        stream = stdin;
+    } else if (optind == argc - 1) {
+        if (!isregfile(argv[optind])) {
+            fprintf(stderr, "Error: '%s' is not a regular file "
+                    "or a symlink to one.\n",
+                    argv[optind]);
+            print_usage_with_help_remark();
+            return EXIT_FAILURE;
+        }
+        stream = fopen(argv[optind], "r");
+        if (stream == NULL) {
+            fprintf(stderr, "Error: Could not open file '%s'.\n",
+                    argv[optind]);
+            print_usage_with_help_remark();
+            return EXIT_FAILURE;
+        }
+    } else {
         print_usage_with_help_remark();
         if (optind > argc) {
             fprintf(stderr, "Error: too few arguments.\n");
@@ -1228,5 +1265,12 @@ int main(int argc, char *argv[])
     }
 
     // extract ranges based on specified type
-    return extract_range_function(print_size, force);
+    rc = extract_range_function(stream, print_size, force);
+
+    // close file if opened
+    if (stream != stdin) {
+        fclose(stream);
+    }
+
+    return rc;
 }

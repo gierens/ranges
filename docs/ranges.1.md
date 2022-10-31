@@ -1,15 +1,15 @@
-\---
+---
 title: RANGES
 section: 1
 header: User Manual
 footer: ranges 0.1
 date: October 25, 2022
-\---
+---
 # NAME
 **ranges** - Command line program to extract ranges from the inputted list.
 
 # SYNOPSIS
-**ranges** [-H|-o|-b|-d|-i|-I|-m] [-f] [-h]
+**ranges** [-H|-o|-b|-d|-i|-I|-m] [-f] [-h] [FILE]
 
 # DESCRIPTION
 **ranges** is a command line program written in C that extracts ranges from
@@ -23,6 +23,10 @@ but can have duplicates.
 When no other range type is given, the program will extract ranges form a
 list of signed decimal numbers in the format DDD...D with D being a decimal
 digit. An example number would be 1234.
+
+**FILE**
+: Path to input file. If not specified, stdin is used, which has to be a pipe
+and not a tty.
 
 **-H**, **\--hex**
 : Extract ranges from a list of unsigned hexadecimal numbers in the format
