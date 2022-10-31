@@ -34,6 +34,21 @@ setup() {
     assert_memcheck_ok
 }
 
+@test "trivial sequence 1 2 3 works with stdin redirection" {
+    printf '1\n2\n3\n' > ranges_test_stdin_1
+
+    run ranges < ranges_test_stdin_1
+    assert_success
+    assert_output '1 3'
+
+    run_with_memcheck ranges < ranges_test_stdin_1
+    assert_success
+    assert_output --partial '1 3'
+    assert_memcheck_ok
+
+    rm ranges_test_stdin_1
+}
+
 @test "'ranges test test' causes 'too many arguments error'" {
     run ranges test test
     assert_failure
