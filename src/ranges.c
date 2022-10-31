@@ -2,6 +2,7 @@
 #define _XOPEN_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <getopt.h>
 #include <stdbool.h>
 #include <errno.h>
@@ -1132,7 +1133,8 @@ int main(int argc, char *argv[])
     extract_range_function_t extract_range_function = NULL;
     int print_size = (int) false;
     int force = (int) false;
-    FILE *stream = stdin;
+    FILE *stream = NULL;
+    int rc;
 
     // option character
     int c;
@@ -1212,8 +1214,23 @@ int main(int argc, char *argv[])
         }
     }
 
-    // check that no extra arguments given
-    if (optind != argc) {
+    // open file if given, and check that not too much or too few arguments
+    if (optind == argc) {
+        if (isatty(STDIN_FILENO)) {
+            fprintf(stderr, "Error: No input given. You must provide a "
+                    "file or pipe!\n");
+            print_usage_with_help_remark();
+            return EXIT_FAILURE;
+        }
+        stream = stdin;
+    } else if (optind == argc - 1) {
+        stream = fopen(argv[optind], "r");
+        if (stream == NULL) {
+            fprintf(stderr, "Error: Could not open file '%s'.\n",
+                    argv[optind]);
+            return EXIT_FAILURE;
+        }
+    } else {
         print_usage_with_help_remark();
         if (optind > argc) {
             fprintf(stderr, "Error: too few arguments.\n");
@@ -1229,5 +1246,12 @@ int main(int argc, char *argv[])
     }
 
     // extract ranges based on specified type
-    return extract_range_function(stream, print_size, force);
+    rc = extract_range_function(stream, print_size, force);
+
+    // close file if opened
+    if (stream != stdin) {
+        fclose(stream);
+    }
+
+    return rc;
 }
