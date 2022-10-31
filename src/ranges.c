@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <limits.h>
 #include <time.h>
 #include <arpa/inet.h>
@@ -1130,6 +1131,14 @@ static inline void check_range_type_unset(extract_range_function_t function)
 }
 
 
+static inline bool isregfile(const char *path)
+{
+    struct stat path_stat = {0};
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
+
 int main(int argc, char *argv[])
 {
     extract_range_function_t extract_range_function = NULL;
@@ -1226,10 +1235,18 @@ int main(int argc, char *argv[])
         }
         stream = stdin;
     } else if (optind == argc - 1) {
+        if (!isregfile(argv[optind])) {
+            fprintf(stderr, "Error: '%s' is not a regular file "
+                    "or a symlink to one.\n",
+                    argv[optind]);
+            print_usage_with_help_remark();
+            return EXIT_FAILURE;
+        }
         stream = fopen(argv[optind], "r");
         if (stream == NULL) {
             fprintf(stderr, "Error: Could not open file '%s'.\n",
                     argv[optind]);
+            print_usage_with_help_remark();
             return EXIT_FAILURE;
         }
     } else {
