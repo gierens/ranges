@@ -323,3 +323,24 @@ setup() {
 
     rm ranges_test_input_20 ranges_test_input_20_symlink
 }
+
+@test "symlink to directory causes 'not a file' error" {
+    mkdir -p ranges_test_input_21
+    ln -s ranges_test_input_21 ranges_test_input_21_symlink
+
+    run ranges ranges_test_input_21_symlink
+    assert_failure
+    assert_output --partial "Error: 'ranges_test_input_21_symlink' is not a regular file or a symlink to one."
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+
+    run_with_memcheck ranges ranges_test_input_21_symlink
+    assert_failure
+    assert_output --partial "Error: 'ranges_test_input_21_symlink' is not a regular file or a symlink to one."
+    assert_output --partial 'Usage: ranges ['
+    assert_output --partial "Try 'ranges -h' for more information"
+    assert_memcheck_ok
+
+    rm ranges_test_input_21_symlink
+    rmdir ranges_test_input_21
+}
