@@ -34,14 +34,14 @@ setup() {
     assert_memcheck_ok
 }
 
-@test "'ranges test' causes 'too many arguments error'" {
-    run ranges test
+@test "'ranges test test' causes 'too many arguments error'" {
+    run ranges test test
     assert_failure
     assert_output --partial 'Error: too many arguments'
     assert_output --partial 'Usage: ranges ['
     assert_output --partial "Try 'ranges -h' for more information"
 
-    run_with_memcheck ranges test
+    run_with_memcheck ranges test test
     assert_failure
     assert_output --partial 'Error: too many arguments'
     assert_output --partial 'Usage: ranges ['
