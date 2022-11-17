@@ -141,5 +141,5 @@ deb-tests: $(DEB_PACKAGE)
 clean:
 	rm -f bin/*
 	rm -f docs/*.1 docs/*.1.gz
-	rm -f $(DEB_PACKAGE)
+	rm -f *.deb
 
