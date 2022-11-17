@@ -13,6 +13,11 @@
 #include <arpa/inet.h>
 
 
+#ifndef VERSION
+#define VERSION ""
+#endif
+
+
 void print_usage(void)
 {
     printf("Usage: ranges [-H|-o|-b|-d|-i|-I|-m] [-s] [-f] [-h] [FILE]\n");
@@ -72,14 +77,14 @@ void print_help(void)
 
 void print_version(void)
 {
-    printf("ranges 0.1\n"
+    printf("ranges %s\n"
            "Copyright (C) 2022 Sandro-Alessio Gierens\n"
            "License GPLv3+: GNU GPL version 3 or later "
            "<https://gnu.org/licenses/gpl.html>.\n"
            "This is free software, you are free to change and redistribute "
            "it.\n"
-           "This program comes with ABSOLUTELY NO WARRANTY.\n"
-           );
+           "This program comes with ABSOLUTELY NO WARRANTY.\n",
+           VERSION);
 }
 
 

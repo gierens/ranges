@@ -5,7 +5,7 @@ CFLAGS=-O3 -Wall -Wextra -Werror -Wpedantic -Wformat=2 -Wformat-overflow=2 -Wfor
 DESTDIR=/usr/bin
 DOCDIR=/usr/share/man/man1
 NAME=ranges
-VERSION=0.1
+VERSION=1.0.0
 ARCH=amd64
 
 BINARY=bin/ranges
@@ -72,7 +72,7 @@ bin: $(BINARY)
 
 bin/%: src/%.c
 	# $(ASAN_OPTIONS) $(CC) $(CFLAGS) $< -o $@
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -DVERSION=\"$(VERSION)\" $< -o $@
 	strip --strip-unneeded --remove-section=.comment --remove-section=.note $@
 
 .PHONY: setup
@@ -91,7 +91,7 @@ docs/%.gz: docs/%
 	gzip -cn9 $< > $@
 
 docs/%: docs/%.md
-	pandoc $< -s -t man -o $@
+	bash -c "pandoc <(sed 's/{{ VERSION }}/$(VERSION)/g' $<) -s -f markdown -t man -o $@"
 
 .PHONY: install
 install: $(BINARY) $(MANPAGE)
@@ -141,5 +141,4 @@ deb-tests: $(DEB_PACKAGE)
 clean:
 	rm -f bin/*
 	rm -f docs/*.1 docs/*.1.gz
-	rm -f $(DEB_PACKAGE)
-
+	rm -f *.deb
