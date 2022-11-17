@@ -103,8 +103,12 @@ make
 
 ### Tests
 Our extensive test suite is based on `bats`, which is however supplied as git
-submodule so doesn't need to be installed. All tests are run with and without 
-`valgrind`'s `memcheck` tool. You can run all tests with:
+submodule so doesn't need to be installed, but initialized:
+```bash
+git submodule init
+```
+All tests are run with and without `valgrind`'s `memcheck` tool. You can
+run all tests with:
 ```bash
 make tests
 ```
