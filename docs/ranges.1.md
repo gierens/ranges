@@ -2,7 +2,7 @@
 title: RANGES
 section: 1
 header: User Manual
-footer: ranges 0.1
+footer: ranges 1.0.0
 date: October 25, 2022
 ---
 # NAME
