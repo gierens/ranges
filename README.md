@@ -39,6 +39,53 @@ then installation should become even easier.
 
 ## Usage
 
+## Building
+
+### Dependencies
+On Ubuntu and Debian the following command should install all those build
+dependencies:
+```bash
+sudo apt install -y build-essential gcc-11 pandoc valgrind lintian
+```
+What all these are needed for is explained in the following sections.
+
+### Binary
+**ranges** uses nothing more than the C standard library so to build the binary
+you need `make` and `gcc-11`. Version 11 is required because we use all
+security flags recommended by
+https://airbus-seclab.github.io/c-compiler-security/gcc_compilation.html
+, some of which are only available since that version. To build the binary
+run:
+```bash
+make
+```
+
+### Tests
+Our extensive test suite is based on `bats`, which is however supplied as git
+submodule so doesn't need to be installed. All tests are run with and without 
+`valgrind`'s `memcheck` tool. You can run all tests with:
+```bash
+make tests
+```
+Note that even though the tests are run in parallel, it might still take
+a moment to run through all of them.
+
+### Manpage
+You can build the manpage with `pandoc` using:
+```bash
+make docs
+```
+
+### Deb Package
+To pack the `deb` package use:
+```bash
+make deb
+```
+To run `lintian` on the debian package run use:
+```bash
+make deb-tests
+```
+
 ## Remarks
 
 ### Use Cases
