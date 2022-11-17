@@ -142,4 +142,3 @@ clean:
 	rm -f bin/*
 	rm -f docs/*.1 docs/*.1.gz
 	rm -f *.deb
-
