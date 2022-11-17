@@ -142,6 +142,10 @@ deb-tests: $(DEB_PACKAGE)
 deb-install: $(DEB_PACKAGE)
 	sudo dpkg -i $(DEB_PACKAGE)
 
+.PHONY: deb-uninstall
+deb-uninstall:
+	sudo dpkg -r $(NAME)
+
 .PHONY: perf-comparison
 perf-comparison: $(BINARY)
 	./scripts/perf-comparison.sh
