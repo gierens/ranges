@@ -47,7 +47,7 @@ When no other range type is given, the program will extract ranges form a
 list of signed decimal numbers in the format DDD...D with D being a decimal
 digit. An example number would be 1234.
 
-|--------|----------------------------------------------------------------|
+| ------ |:--------------------------------------------------------------:|
 | **FILE** | Optional input file. Stdin is used by default, can't be a tty. |
 | **-H**, **\--hex** | For unsigned hexadecimal numbers e.g. `0x12ab`. |
 | **-o**, **\--octal** | For unsigned octal numbers e.g. `0o0127`. |
