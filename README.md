@@ -12,6 +12,31 @@ but can have duplicates.
 
 ## Installation
 
+Note that you need `make`, `gcc-11` and `pandoc` to install **ranges** from sources:
+
+### On Linux
+You can install **ranges** with:
+```bash
+make
+sudo make install
+```
+You can uninstall it with:
+```bash
+sudo make uninstall
+```
+
+### On Debian
+On a Debian-based distro you can also install ranges via a `deb` package with:
+```bash
+make deb-install
+```
+In this case removal is done with:
+```bash
+make deb-uninstall
+```
+Note that I plan to package this for Debian and possibly other distros soon,
+then installation should become even easier.
+
 ## Usage
 
 ## Remarks

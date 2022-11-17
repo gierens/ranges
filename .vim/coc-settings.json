@@ -1,6 +1,11 @@
 {
   "cSpell.words": [
+    "distros",
     "Hobdi",
-    "ipranges"
+    "ipranges",
+    "lintian",
+    "memcheck",
+    "pandoc",
+    "valgrind"
   ]
 }
