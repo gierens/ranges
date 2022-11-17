@@ -138,6 +138,10 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 deb-tests: $(DEB_PACKAGE)
 	lintian $(DEB_PACKAGE)
 
+.PHONY: deb-install
+deb-install: $(DEB_PACKAGE)
+	sudo dpkg -i $(DEB_PACKAGE)
+
 .PHONY: perf-comparison
 perf-comparison: $(BINARY)
 	./scripts/perf-comparison.sh
