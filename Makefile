@@ -91,7 +91,7 @@ docs/%.gz: docs/%
 	gzip -cn9 $< > $@
 
 docs/%: docs/%.md
-	pandoc $< -s -t man -o $@
+	bash -c "pandoc <(sed 's/{{ VERSION }}/$(VERSION)/g' $<) -s -f markdown -t man -o $@"
 
 .PHONY: install
 install: $(BINARY) $(MANPAGE)
