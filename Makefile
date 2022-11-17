@@ -5,7 +5,7 @@ CFLAGS=-O3 -Wall -Wextra -Werror -Wpedantic -Wformat=2 -Wformat-overflow=2 -Wfor
 DESTDIR=/usr/bin
 DOCDIR=/usr/share/man/man1
 NAME=ranges
-VERSION=0.1
+VERSION=1.0.0
 ARCH=amd64
 
 BINARY=bin/ranges
