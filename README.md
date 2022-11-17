@@ -63,13 +63,16 @@ digit. An example number would be 1234.
 | **-v**, **\--version** | Print version, copyright and license information. |
 
 ### EXAMPLES
-**printf \'1\\n2\\n2\\n3\\n6\\n7\\n8\\n\' | ranges**
-: Default decimal number range extraction with will return the ranges
-1 to 3 and 6 to 8 in the format: \'1 2\\n3 4\\n\'
-
-**printf \'1.0.0.1\\n1.0.0.2\\n1.1.1.1\\n\' | ranges \--ipv4**
-: Default decimal number range extraction with will return the ranges
-1 to 3 and 6 to 8 in the format: \'1.0.0.1 1.0.0.2\\n1.1.1.1 1.1.1.1\\n\'
+```bash
+$> printf '1\n2\n2\n3\n6\n7\n8\n' | ranges
+1 2
+3 4
+$>
+$> printf '1.0.0.1\n1.0.0.2\n1.1.1.1\n' | ranges --ipv4
+1.0.0.1 1.0.0.2
+1.1.1.1 1.1.1.1
+$>
+```
 
 ## Building
 
