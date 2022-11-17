@@ -17,6 +17,19 @@ but can have duplicates.
 ## Remarks
 
 ### Use Cases
+In case you wonder when this program might be useful, let me give you a short
+example: I work in data center on a system consisting of a larger number of
+servers. Their different IP addresses are configured statically and also
+contained in the `/etc/hosts` of our management machine. Unfortunately, the way
+we initially assigned the addresses to the different types of nodes (compute,
+gpu, ...) turned out not to be very scalable, when we got a huge bunch of new
+servers. Our subnet was a mess in terms of fragmentation and finding the
+still free addresses manually would have been tedious. We wondered whether
+there was any command line tool that could summarize the list of IP addresses
+from the `/etc/hosts` into address ranges, so we could easily find the gaps.
+While it didn't take more than a few minutes to program a small Python script
+that would do just that, at least for IPv4 addresses, I was surprised that I
+couldn't find any general command line tool for the job.
 
 ### Performance
 
