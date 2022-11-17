@@ -72,7 +72,7 @@ bin: $(BINARY)
 
 bin/%: src/%.c
 	# $(ASAN_OPTIONS) $(CC) $(CFLAGS) $< -o $@
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -DVERSION=\"$(VERSION)\" $< -o $@
 	strip --strip-unneeded --remove-section=.comment --remove-section=.note $@
 
 .PHONY: setup
@@ -91,7 +91,7 @@ docs/%.gz: docs/%
 	gzip -cn9 $< > $@
 
 docs/%: docs/%.md
-	pandoc $< -s -t man -o $@
+	bash -c "pandoc <(sed 's/{{ VERSION }}/$(VERSION)/g' $<) -s -f markdown -t man -o $@"
 
 .PHONY: install
 install: $(BINARY) $(MANPAGE)
