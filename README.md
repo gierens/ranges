@@ -32,6 +32,19 @@ that would do just that, at least for IPv4 addresses, I was surprised that I
 couldn't find any general command line tool for the job.
 
 ### Performance
+It is obviously more convenient to have a ready to use command line tool that
+supports different types of lists, instead of scripting a new one anytime
+some problem like the one described above comes up, **ranges** is written in C
+and therefore also much faster. A short runtime comparison with a Python
+script similar to my first one on a large IPv4 address list (10 million
+entries) gives the following results:
+```bash
+$> make perf-comparison
+./scripts/perf-comparison.sh
+ipranges.py: 29.188s
+ranges -i: 0.836s
+$>
+```
 
 ## License
 This code is distributed under [GPLv3](LICENSE) license.
