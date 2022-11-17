@@ -138,6 +138,7 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 deb-tests: $(DEB_PACKAGE)
 	lintian $(DEB_PACKAGE)
 
+.PHONY: perf-comparison
 perf-comparison: $(BINARY)
 	./scripts/perf-comparison.sh
 
