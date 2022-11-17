@@ -72,7 +72,7 @@ void print_help(void)
 
 void print_version(void)
 {
-    printf("ranges 0.1\n"
+    printf("ranges 1.0.0\n"
            "Copyright (C) 2022 Sandro-Alessio Gierens\n"
            "License GPLv3+: GNU GPL version 3 or later "
            "<https://gnu.org/licenses/gpl.html>.\n"
