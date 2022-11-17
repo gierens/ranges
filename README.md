@@ -62,6 +62,12 @@ digit. An example number would be 1234.
 | **-h**, **\--help** | Print the help message. |
 | **-v**, **\--version** | Print version, copyright and license information. |
 
+For more information refer to the help message with `-h/--help` or the
+manpage with
+```bash
+man ranges
+```
+
 ### EXAMPLES
 ```bash
 $> printf '1\n2\n2\n3\n6\n7\n8\n' | ranges
