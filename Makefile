@@ -137,6 +137,9 @@ $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 deb-tests: $(DEB_PACKAGE)
 	lintian $(DEB_PACKAGE)
 
+perf-comparison: $(BINARY)
+	./scripts/perf-comparison.sh
+
 .PHONY: clean
 clean:
 	rm -f bin/*
