@@ -1,3 +1,3 @@
-# What's new in version 0.1?
+# What's new in version 1.0.0?
 
 * Everything!
