@@ -10,5 +10,15 @@ and binary numbers, dates, IPv4, IPv6 and MAC addresses. The list input
 is given over the standard input, so by pipe, and is assumed to be sorted,
 but can have duplicates.
 
+## Installation
+
+## Usage
+
+## Remarks
+
+### Use Cases
+
+### Performance
+
 ## License
 This code is distributed under [GPLv3](LICENSE) license.
