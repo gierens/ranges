@@ -40,7 +40,7 @@ then installation should become even easier.
 ## Usage
 
 ### SYNOPSIS
-**ranges** `[-H|-o|-b|-d|-i|-I|-m] [-f] [-h] [FILE]`
+`ranges [-H|-o|-b|-d|-i|-I|-m] [-f] [-h] [FILE]`
 
 ### OPTIONS
 When no other range type is given, the program will extract ranges form a
