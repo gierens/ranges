@@ -1,0 +1,31 @@
+name: deb
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  deb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GCC 11, pandoc and lintian
+        run: sudo apt update && sudo apt install -y gcc-11 pandoc lintian
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Build deb package
+        run: make deb
+      - name: Run lintian on deb package
+        run: make deb-tests
+      - name: Install deb package
+        run: sudo make deb-install
+      - name: Run ranges
+        run: ranges -v
+      - name: Access manpage
+        run: man ranges >/dev/null
+      - name: Uninstall deb package
+        run: sudo make deb-uninstall
+      - name: Check that ranges not runnable
+        run: ranges && false || true
+      - name: Check that manpage is gone
+        run: man ranges >/dev/null && false || true
