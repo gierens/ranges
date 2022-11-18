@@ -1,0 +1,17 @@
+name: docs
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install pandoc
+        run: sudo apt update && sudo apt install -y pandoc
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Build ranges manpage
+        run: make docs
