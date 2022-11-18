@@ -2,6 +2,7 @@
 
 ![build](https://github.com/gierens/ranges/actions/workflows/build.yml/badge.svg)
 ![tests](https://github.com/gierens/ranges/actions/workflows/test.yml/badge.svg)
+![docs](https://github.com/gierens/ranges/actions/workflows/docs.yml/badge.svg)
 
 **ranges** is a command line program written in C that extracts ranges from
 various types of lists. By default it parses signed decimal integer lists,
