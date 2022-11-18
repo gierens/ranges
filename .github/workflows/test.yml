@@ -6,7 +6,7 @@ on:
     branches: [ "master", "develop" ]
 
 jobs:
-  test:
+  binary:
     runs-on: ubuntu-latest
     steps:
       - name: Install gcc-11 and valgrind
@@ -17,5 +17,161 @@ jobs:
           submodules: recursive
       - name: Build ranges binary
         run: make
-      - name: Run tests
-        run: make tests
+      - name: Run binary tests
+        run: test/deps/bats/bin/bats -j `nproc` test/binary.bats
+  date:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run date tests
+        run: test/deps/bats/bin/bats -j `nproc` test/date.bats
+  decimal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run decimal tests
+        run: test/deps/bats/bin/bats -j `nproc` test/decimal.bats
+  file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run file tests
+        run: test/deps/bats/bin/bats -j `nproc` test/file.bats
+  force:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run force tests
+        run: test/deps/bats/bin/bats -j `nproc` test/force.bats
+  help:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run help tests
+        run: test/deps/bats/bin/bats -j `nproc` test/help.bats
+  hex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex tests
+        run: test/deps/bats/bin/bats -j `nproc` test/hex.bats
+  ipv4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex ipv4
+        run: test/deps/bats/bin/bats -j `nproc` test/ipv4.bats
+  ipv6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex ipv6
+        run: test/deps/bats/bin/bats -j `nproc` test/ipv6.bats
+  mac:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex mac
+        run: test/deps/bats/bin/bats -j `nproc` test/mac.bats
+  octal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex octal
+        run: test/deps/bats/bin/bats -j `nproc` test/octal.bats
+  options:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex options
+        run: test/deps/bats/bin/bats -j `nproc` test/options.bats
+  size:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc-11 and valgrind
+        run: sudo apt update && sudo apt install -y gcc-11 valgrind
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build ranges binary
+        run: make
+      - name: Run hex size
+        run: test/deps/bats/bin/bats -j `nproc` test/size.bats
