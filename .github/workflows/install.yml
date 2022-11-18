@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install GCC 11
-        run: sudo apt update && sudo apt install -y gcc-11
+        run: sudo apt update && sudo apt install -y gcc-11 pandoc
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Install ranges
