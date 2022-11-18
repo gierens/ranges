@@ -6,7 +6,7 @@ on:
     branches: [ "master", "develop" ]
 
 jobs:
-  test:
+  docs:
     runs-on: ubuntu-latest
     steps:
       - name: Install pandoc
