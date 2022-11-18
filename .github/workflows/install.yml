@@ -1,0 +1,27 @@
+name: install
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GCC 11
+        run: sudo apt update && sudo apt install -y gcc-11 pandoc
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install ranges
+        run: sudo make install
+      - name: Run ranges
+        run: ranges -v
+      - name: Access manpage
+        run: man ranges >/dev/null
+      - name: Uninstall ranges
+        run: sudo make uninstall
+      - name: Check that ranges not runnable
+        run: ranges && false || true
+      - name: Check that manpage is gone
+        run: man ranges >/dev/null && false || true
