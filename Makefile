@@ -111,24 +111,32 @@ deb: $(DEB_PACKAGE)
 $(DEB_PACKAGE): $(BINARY) $(MANPAGE) Makefile
 	# create temporary build directory
 	mkdir -p $(DEB_TMP_DIR)
-	# binary
+	# create directory structure
 	mkdir -p $(DEB_TMP_DIR)$(DESTDIR)
-	cp bin/ranges $(DEB_TMP_DIR)$(DESTDIR)
-	# man page
 	mkdir -p $(DEB_TMP_DIR)$(DOCDIR)
-	cp docs/ranges.1.gz $(DEB_TMP_DIR)$(DOCDIR)
-	# control file
 	mkdir -p $(DEB_TMP_DIR)/DEBIAN
+	mkdir -p $(DEB_TMP_DIR)/usr/share/doc/$(NAME)
+	# fix directory permissions
+	chmod 755 -R $(DEB_TMP_DIR)
+	# binary
+	cp bin/ranges $(DEB_TMP_DIR)$(DESTDIR)
+	chmod 755 $(DEB_TMP_DIR)$(DESTDIR)/ranges
+	# man page
+	cp docs/ranges.1.gz $(DEB_TMP_DIR)$(DOCDIR)
+	chmod 644 $(DEB_TMP_DIR)$(DOCDIR)/ranges.1.gz
+	# control file
 	touch $(DEB_TMP_DIR)/DEBIAN/control
 	@echo "$$DEB_CONTROL" > $(DEB_TMP_DIR)/DEBIAN/control
+	chmod 644 $(DEB_TMP_DIR)/DEBIAN/control
 	# changelog
-	mkdir -p $(DEB_TMP_DIR)/usr/share/doc/$(NAME)
 	cp CHANGELOG.md $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
 	gzip -cn9 $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog > $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog.gz
 	rm $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog
+	chmod 644 $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/changelog.gz
 	# copyright file
 	touch $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/copyright
 	@echo "$$DEB_COPYRIGHT" > $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/copyright
+	chmod 644 $(DEB_TMP_DIR)/usr/share/doc/$(NAME)/copyright
 	# build package
 	dpkg-deb --build --root-owner-group $(DEB_TMP_DIR)
 	# clean up
