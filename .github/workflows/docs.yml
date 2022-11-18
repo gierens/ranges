@@ -15,3 +15,5 @@ jobs:
         uses: actions/checkout@v3
       - name: Build ranges manpage
         run: make docs
+      - name: Access manpage
+        run: man docs/ranges.1.gz >/dev/null
