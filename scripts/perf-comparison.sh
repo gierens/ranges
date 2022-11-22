@@ -12,3 +12,11 @@ rm -rf /tmp/ranges
 
 echo "ipranges.py: ${TIME1}s"
 echo "ranges -i: ${TIME2}s"
+
+if (( $(echo "${TIME1} > 20 * ${TIME2}" | bc -l) )); then
+    echo "OK: ranges is more than 20 times faster than ipranges.py"
+    exit 0
+else
+    echo "FAIL: ranges is not more than 20x faster than ipranges.py"
+    exit 1
+fi
