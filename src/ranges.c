@@ -42,7 +42,7 @@ void print_help(void)
            "don't need to be removed however.\n"
            "\n"
            "Optional arguments:\n"
-           "  FILE            Path to input file. If not specified, stdin is "
+           "  FILE            Path to input file. If not specified, stdin is\n"
            "                  used, which has to be a pipe and not a tty.\n"
            "  -H, --hex       Extract unsigned hexadecimal number "
            "ranges. (Format: 0x1)\n"
