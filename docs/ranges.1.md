@@ -20,13 +20,11 @@ is given over the standard input, so by pipe, and is assumed to be sorted,
 but can have duplicates.
 
 # OPTIONS
+
+## Range Type Options
 When no other range type is given, the program will extract ranges form a
 list of signed decimal numbers in the format DDD...D with D being a decimal
 digit. An example number would be 1234.
-
-**FILE**
-: Path to input file. If not specified, stdin is used, which has to be a pipe
-and not a tty.
 
 **-H**, **\--hex**
 : Extract ranges from a list of unsigned hexadecimal numbers in the format
@@ -56,6 +54,12 @@ The shortened format is also supported, so for example ::1.
 **-m**, **\--mac**
 : Extract ranges from a list of MAC addresses in the format MM:MM:MM:MM:MM:MM,
 with M being a hexadecimal digit, so for example 00:12:34:ab:cd:ef.
+
+## Other Optional Arguments
+
+**FILE**
+: Path to input file. If not specified, stdin is used, which has to be a pipe
+and not a tty.
 
 **-s**, **\--size**
 : Count the ranges' sizes and output them in the third column.

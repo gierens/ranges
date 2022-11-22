@@ -44,13 +44,14 @@ then installation should become even easier.
 `ranges [-H|-o|-b|-d|-i|-I|-m] [-f] [-h] [FILE]`
 
 ### OPTIONS
+
+#### Range Type Options
 When no other range type is given, the program will extract ranges form a
 list of signed decimal numbers in the format DDD...D with D being a decimal
 digit. An example number would be 1234.
 
 | Option | Description                                                    |
 | ------ |:--------------------------------------------------------------:|
-| **FILE** | Optional input file. Stdin is used by default, can't be a tty. |
 | **-H**, **\--hex** | For unsigned hexadecimal numbers e.g. `0x12ab`. |
 | **-o**, **\--octal** | For unsigned octal numbers e.g. `0o0127`. |
 | **-b**, **\--binary** | For unsigned binary numbers e.g. `0b0110`. |
@@ -58,6 +59,12 @@ digit. An example number would be 1234.
 | **-i**, **\--ipv4** | For IPv4 addresses e.g. `127.0.0.1`. |
 | **-I**, **\--ipv6** | For IPv6 addresses e.g. `::1`. |
 | **-m**, **\--mac** | For MAC addresses e.g. `00:12:34:ab:cd:ef`. |
+
+#### Other Optional Arguments
+
+| Option | Description                                                    |
+| ------ |:--------------------------------------------------------------:|
+| **FILE** | Optional input file. Stdin is used by default, can't be a tty. |
 | **-s**, **\--size** | Output the range size as third column. |
 | **-f**, **\--force** | Ignore parsing errors like malformed IPv6 addresses. |
 | **-h**, **\--help** | Print the help message. |
