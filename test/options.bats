@@ -50,6 +50,9 @@ setup() {
 }
 
 @test "ranges with tty input causes 'no input error'" {
+    if [ ! -z "${RUNNER_OS}" ]; then
+        skip "/dev/tty is not accessible in GitHub runner"
+    fi
     if [ ! -c /dev/tty ]; then
         skip "no /dev/tty device"
     fi
