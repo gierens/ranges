@@ -161,6 +161,7 @@ $> make perf-comparison
 ./scripts/perf-comparison.sh
 ipranges.py: 29.188s
 ranges -i: 0.836s
+OK: ranges is more than 20 times faster than ipranges.py
 $>
 ```
 
