@@ -11,6 +11,8 @@ and binary numbers, dates, IPv4, IPv6 and MAC addresses. The list input
 is given over the standard input, so by pipe, and is assumed to be sorted,
 but can have duplicates.
 
+![ranges demo](docs/ranges.gif)
+
 ## Installation
 
 Note that you need `make`, `gcc-11` and `pandoc` to install **ranges** from sources:
