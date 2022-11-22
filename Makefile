@@ -10,6 +10,7 @@ ARCH=amd64
 
 BINARY=bin/ranges
 MANPAGE=docs/ranges.1.gz
+GIF=docs/ranges.gif
 
 DEB_TMP_DIR=$(NAME)_$(VERSION)_$(ARCH)
 DEB_PACKAGE=$(NAME)_$(VERSION)_$(ARCH).deb
@@ -157,6 +158,12 @@ deb-uninstall:
 .PHONY: perf-comparison
 perf-comparison: $(BINARY)
 	./scripts/perf-comparison.sh
+
+.PHONY: gif
+gif: $(GIF)
+
+%.gif: %.yml
+	terminalizer render $< -o $@
 
 .PHONY: clean
 clean:
