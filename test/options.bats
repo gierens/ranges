@@ -50,7 +50,7 @@ setup() {
 }
 
 @test "ranges with tty input causes 'no input error'" {
-    if [ ! -f /dev/tty ]; then
+    if [ ! -c /dev/tty ]; then
         skip "no /dev/tty device"
     fi
 
